@@ -1,5 +1,6 @@
 package digitalhands.az.config;
 
+import digitalhands.az.enums.UserRole;
 import digitalhands.az.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,8 +47,10 @@ public class WebSecurityConfiguration {
         return http.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/user/signup", "/user/login", "/blog-post/get/**")
+                .requestMatchers("/user/signup", "/user/login", "/blog-post/get/**", "/image/**", "/experience/get/**")
                 .permitAll()
+
+
                 .and()
                 .authorizeHttpRequests()
                 .anyRequest()
