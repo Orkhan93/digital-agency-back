@@ -7,4 +7,5 @@ public class ErrorMessage {
     public static final String NOT_MATCHES = "The passwords you entered do not match: ";
     public static final String BLOG_POST_NOT_FOUND = "BlogPost not found: ";
     public static final String ERROR_IMAGE_DOWNLOAD = "Error downloading an image: ";
+    public static final String EXPERIENCE_NOT_FOUND = "Experience not found : ";
 }

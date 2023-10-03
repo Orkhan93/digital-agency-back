@@ -1,6 +1,7 @@
 package digitalhands.az.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,5 +29,10 @@ public class BlogPost {
     @Column(name = "creationDate")
     @JsonFormat(pattern = "dd-mm-yyyy'T'HH:mm")
     private LocalDateTime creationDate;
+
+    @ManyToOne
+    @JoinColumn(name = "experience_id", nullable = false)
+    @JsonIgnore
+    private Experience experience;
 
 }
