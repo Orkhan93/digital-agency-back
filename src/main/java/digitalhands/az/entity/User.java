@@ -1,12 +1,9 @@
 package digitalhands.az.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import digitalhands.az.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
-
-@NamedQuery(name = "User.findFirstByEmail" , query = "select  u from User u where u.email=:email")
-@NamedQuery(name = "User.updateStatus" ,query = "update User u set u.status=:status where u.id=:id")
-@NamedQuery(name = "User.getAllUser" , query = "select new digitalhands.az.wrapper.UserWrapper(u.id,u.name,u.username,u.email,u.status) from User u where u.userRole='user'")
-@NamedQuery(name = "User.getAllAdmin" , query = "select u.email from User u where u.userRole='admin'")
 
 @Entity
 @Data
@@ -28,12 +25,10 @@ public class User {
     private String email;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
-    @Column(name = "userRole")
-    private String userRole;
-
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
 }
