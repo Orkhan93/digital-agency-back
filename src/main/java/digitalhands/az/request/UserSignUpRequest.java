@@ -10,7 +10,6 @@ public class UserSignUpRequest {
     private String username;
     private String email;
     private String password;
-    private String status;
     private String userRole;
 
 }

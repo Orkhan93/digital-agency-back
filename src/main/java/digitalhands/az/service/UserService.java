@@ -1,26 +1,30 @@
 package digitalhands.az.service;
 
-import digitalhands.az.constant.AgencyConstant;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
+import digitalhands.az.exception.IncorrectPasswordException;
+import digitalhands.az.exception.errors.ErrorMessage;
+import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.mappers.UserMapper;
 import digitalhands.az.repository.UserRepository;
-import digitalhands.az.request.StatusAndRoleUserRequest;
+import digitalhands.az.request.ChangePasswordRequest;
+import digitalhands.az.request.UserLoginRequest;
 import digitalhands.az.request.UserSignUpRequest;
+import digitalhands.az.response.UserResponse;
 import digitalhands.az.security.JwtUtil;
-import digitalhands.az.wrapper.UserWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static digitalhands.az.constant.AgencyConstant.*;
-import static digitalhands.az.enums.ErrorCode.UNAUTHORIZED_ACCESS;
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -29,96 +33,60 @@ public class UserService {
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
     private final EncryptionService encryptionService;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<?> signUp(UserSignUpRequest userSignUpRequest) {
-            if (validationSignUp(userSignUpRequest)) {
-                User user = userRepository.findFirstByEmail(userSignUpRequest.getEmail());
-                if (Objects.isNull(user)) {
-                    User saved = userRepository.save(getUserFromRequest(userSignUpRequest, false));
-                    return ResponseEntity.ok(saved);
-                } else {
-                    return ResponseEntity.status(BAD_REQUEST).body(USER_ALREADY_EXISTS);
-                }
+        if (validationSignUp(userSignUpRequest)) {
+            User user = userRepository.findFirstByEmail(userSignUpRequest.getEmail());
+            if (Objects.isNull(user)) {
+                User saved = userMapper.fromUserSignUpRequestToModel(userSignUpRequest);
+                saved.setPassword(encryptionService.encryptPassword(userSignUpRequest.getPassword()));
+                saved.setUserRole(UserRole.ADMIN);
+                return ResponseEntity.ok(userRepository.save(saved));
             } else {
-                return ResponseEntity.badRequest().build();
+                log.error("userSignUpRequest {}", userSignUpRequest);
+                return ResponseEntity.status(BAD_REQUEST).body(USER_ALREADY_EXISTS);
             }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    public String login(UserSignUpRequest userSignUpRequest) {
-        Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(userSignUpRequest.getEmail());
+    public String login(UserLoginRequest userLoginRequest) {
+        Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(userLoginRequest.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (encryptionService.verifyPassword(userSignUpRequest.getPassword(), user.getPassword())) {
-                if (user.getStatus().equals("false"))
-                    return ADMIN_APPROVAL;
-                return jwtUtil.generateToken(userSignUpRequest.getEmail(), userSignUpRequest.getUserRole());
+            if (encryptionService.verifyPassword(userLoginRequest.getPassword(), user.getPassword())) {
+                return jwtUtil.generateTokenTest(userLoginRequest.getEmail());
             } else
                 return INVALID_DATA;
         }
+        log.error("login {}", userLoginRequest);
         return BAD_CREDENTIALS;
     }
 
-    public ResponseEntity<?> updateStatusAndRole(Long userId, StatusAndRoleUserRequest statusAndRoleUserRequest) {
-            User user = userRepository.findById(userId).orElseGet(() -> null);
-            if (Objects.nonNull(user)) {
-                if (user.getUserRole().equalsIgnoreCase(UserRole.ADMIN.name())) {
-                    Optional<User> optionalUser = userRepository.findById(statusAndRoleUserRequest.getId());
-                    if (optionalUser.isPresent()) {
-                        User dbUser = optionalUser.get();
-                        if (Objects.nonNull(statusAndRoleUserRequest.getRole())) {
-                            dbUser.setUserRole(statusAndRoleUserRequest.getRole());
-                        }
-                        if (Objects.nonNull(statusAndRoleUserRequest.getStatus())) {
-                            dbUser.setStatus(statusAndRoleUserRequest.getStatus());
-                        }
-                        return ResponseEntity.ok(userRepository.save(dbUser));
-                    } else {
-                        return ResponseEntity.status(NOT_FOUND).body(USER_NOT_FOUND);
-                    }
-                }
-                return ResponseEntity.status(UNAUTHORIZED).body(UNAUTHORIZED_ACCESS);
-            }
-
-            return ResponseEntity.status(NOT_FOUND).body("User not found that entered Admin Id");
+    public ResponseEntity<UserResponse> getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + userId));
+        return ResponseEntity.ok(userMapper.fromModelToResponse(user));
     }
 
-    public ResponseEntity<?> getUserById(Long userId) {
-        User user = userRepository.findById(userId).orElseGet(() -> null);
-        if (Objects.nonNull(user)) {
-            return ResponseEntity.ok(userMapper.fromModelToResponse(user));
+    public void changePassword(ChangePasswordRequest changePasswordRequest, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + userId));
+        if (!Objects.equals(user.getPassword(), changePasswordRequest.getOldPassword())) {
+            throw new IncorrectPasswordException(ErrorMessage.NOT_EQUALS_PASSWORD);
         }
-        return ResponseEntity.status(NOT_FOUND).body(USER_NOT_FOUND);
-    }
-
-    public List<UserWrapper> getUserByUsername(String username) {
-        return userMapper.fromModelToWrapper(userRepository.findByUsername(username));
-    }
-
-    public List<UserWrapper> getUserByName(String name) {
-        return userMapper.fromModelToWrapper(userRepository.findByName(name));
-    }
-
-    public List<UserWrapper> getUserByStatus(String status) {
-        return userMapper.fromModelToWrapper(userRepository.findByStatus(status));
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmPassword())) {
+            throw new IncorrectPasswordException(ErrorMessage.NOT_MATCHES);
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
     }
 
     private boolean validationSignUp(UserSignUpRequest signUpRequest) {
         return signUpRequest.getName() != null && signUpRequest.getEmail() != null
                 && signUpRequest.getUsername() != null && signUpRequest.getPassword() != null;
-    }
-
-    private User getUserFromRequest(UserSignUpRequest userSignUpRequest, boolean isAdd) {
-        User user = new User();
-        if (isAdd) {
-            user.setId(userSignUpRequest.getId());
-        }
-        user.setUsername(userSignUpRequest.getUsername());
-        user.setEmail(userSignUpRequest.getEmail());
-        user.setName(userSignUpRequest.getName());
-        user.setPassword(encryptionService.encryptPassword(userSignUpRequest.getPassword()));
-        user.setUserRole("moderator");
-        user.setStatus("false");
-        return user;
     }
 
 }

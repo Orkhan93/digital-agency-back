@@ -1,6 +1,8 @@
 package digitalhands.az.security;
 
 import digitalhands.az.entity.User;
+import digitalhands.az.exception.errors.ErrorMessage;
+import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +29,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         log.info("Inside loadUserByUsername {}", username);
         User user = userRepository.findFirstByEmail(username);
         userDetail = userRepository.findFirstByEmail(username);
-        if (user == null) throw new UsernameNotFoundException("Username not found.");
+        if (user == null) throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
         return new org.springframework.security.core.userdetails.User(user.getEmail(),
                 new BCryptPasswordEncoder().encode(user.getPassword()), new ArrayList<>());
     }
