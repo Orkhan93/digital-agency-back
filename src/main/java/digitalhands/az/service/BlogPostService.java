@@ -1,13 +1,16 @@
 package digitalhands.az.service;
 
 import digitalhands.az.entity.BlogPost;
+import digitalhands.az.entity.Experience;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.BlogPostNotFoundException;
+import digitalhands.az.exception.ExperienceNotFoundException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.BlogPostMapper;
 import digitalhands.az.repository.BlogPostRepository;
+import digitalhands.az.repository.ExperienceRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.BlogPostRequest;
 import digitalhands.az.response.BlogPostResponse;
@@ -27,13 +30,18 @@ public class BlogPostService {
     private final BlogPostRepository blogPostRepository;
     private final UserRepository userRepository;
     private final BlogPostMapper blogPostMapper;
+    private final ExperienceRepository experienceRepository;
 
     public ResponseEntity<BlogPostResponse> createBlog(BlogPostRequest blogPostRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            BlogPost blogPost = blogPostRepository.save(blogPostMapper.fromRequestToModel(blogPostRequest));
-            return ResponseEntity.status(HttpStatus.OK).body(blogPostMapper.fromModelToResponse(blogPost));
+            Experience experience = experienceRepository.findById(blogPostRequest.getExperienceId()).orElseThrow(
+                    () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
+            BlogPost blogPost = blogPostMapper.fromRequestToModel(blogPostRequest);
+            blogPost.setExperience(experience);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(blogPost)));
         } else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -45,9 +53,12 @@ public class BlogPostService {
             BlogPost blogPost = blogPostRepository.findById(blogPostRequest.getId()).orElseThrow(
                     () -> new BlogPostNotFoundException(ErrorMessage.BLOG_POST_NOT_FOUND));
             if (Objects.nonNull(blogPost)) {
+                Experience experience = experienceRepository.findById(blogPostRequest.getExperienceId()).orElseThrow(
+                        () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
+                BlogPost updatedBlog = blogPostMapper.fromRequestToModel(blogPostRequest);
+                blogPost.setExperience(experience);
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(blogPostMapper.fromModelToResponse
-                                (blogPostRepository.save(blogPostMapper.fromRequestToModel(blogPostRequest))));
+                        .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(updatedBlog)));
             } else
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else
@@ -65,6 +76,7 @@ public class BlogPostService {
             return ResponseEntity.status(HttpStatus.OK).body(blogPostMapper.fromModelToResponse(blogPost));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
 }
