@@ -4,6 +4,7 @@ import digitalhands.az.entity.Experience;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.ExperienceNotFoundException;
+import digitalhands.az.exception.UnauthorizedUserException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.ExperienceMapper;
@@ -66,12 +67,13 @@ public class ExperienceService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         Experience experience = experienceRepository.findById(experienceId).orElseThrow(
                 () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
-        if (Objects.nonNull(user)) {
+        if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             if (Objects.nonNull(experience)) {
                 experienceRepository.deleteById(experienceId);
                 log.info("deleteExperience {}", experience);
             }
-        }
+        } else
+            throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
     }
 
 }

@@ -4,6 +4,7 @@ import digitalhands.az.entity.Collection;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.CollectionNotFoundException;
+import digitalhands.az.exception.UnauthorizedUserException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.CollectionMapper;
@@ -75,7 +76,8 @@ public class CollectionService {
                     () -> new CollectionNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
             collectionRepository.deleteById(collectionId);
             log.info("deleteCollection {}", collection);
-        }
+        } else
+            throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
     }
 
 }
