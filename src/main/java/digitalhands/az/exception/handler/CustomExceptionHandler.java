@@ -55,4 +55,11 @@ public class CustomExceptionHandler {
         return new ExceptionResponse(HttpStatus.NOT_FOUND.name(), exception.getMessage());
     }
 
+    @ExceptionHandler(GraduateNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionResponse handlerGraduateNotFoundException(GraduateNotFoundException exception) {
+        log.error("handlerGraduateNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(HttpStatus.NOT_FOUND.name(), exception.getMessage());
+    }
+
 }

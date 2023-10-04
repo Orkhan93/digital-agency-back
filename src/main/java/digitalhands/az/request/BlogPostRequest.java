@@ -11,5 +11,6 @@ public class BlogPostRequest {
     private String title;
     private String content;
     private LocalDateTime creationDate;
+    private Long experienceId;
 
 }

@@ -26,4 +26,9 @@ public class Experience {
             fetch = FetchType.LAZY)
     private List<BlogPost> blogPostList;
 
+    @OneToMany(mappedBy = "experience",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<Graduate> graduateList;
+
 }
