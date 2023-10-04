@@ -69,4 +69,18 @@ public class CustomExceptionHandler {
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
 
+    @ExceptionHandler(TeacherNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handlerTeacherNotFoundException(TeacherNotFoundException exception) {
+        log.error("handlerTeacherNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public ExceptionResponse handlerUnauthorizedUserException(UnauthorizedUserException exception) {
+        log.error("handlerUnauthorizedUserException {}", exception.getMessage());
+        return new ExceptionResponse(UNAUTHORIZED.name(), exception.getMessage());
+    }
+
 }
