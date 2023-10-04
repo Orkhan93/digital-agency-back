@@ -3,12 +3,13 @@ package digitalhands.az.request;
 import lombok.Data;
 
 @Data
-public class GraduateRequest {
+public class CourseRequest {
 
     private Long id;
     private String name;
-    private String surname;
+    private String title;
     private String content;
-    private Long experienceId;
+    private byte[] imageData;
+    private Long categoryId;
 
 }

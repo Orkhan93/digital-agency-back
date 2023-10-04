@@ -9,5 +9,6 @@ public class ErrorMessage {
     public static final String ERROR_IMAGE_DOWNLOAD = "Error downloading an image: ";
     public static final String EXPERIENCE_NOT_FOUND = "Experience not found : ";
     public static final String GRADUATE_NOT_FOUND = "Graduate not found : ";
+    public static final String COLLECTION_NOT_FOUND = "Collection not found : ";
 
 }

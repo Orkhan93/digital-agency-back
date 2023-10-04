@@ -6,7 +6,7 @@ import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.ExperienceNotFoundException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
-import digitalhands.az.repository.ExperienceMapper;
+import digitalhands.az.mappers.ExperienceMapper;
 import digitalhands.az.repository.ExperienceRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.ExperienceRequest;

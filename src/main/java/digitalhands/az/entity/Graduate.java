@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+@NamedQuery(name = "Graduate.getAllGraduate",
+        query = "select new digitalhands.az.wrapper.GraduateWrapper" +
+                "(g.id,g.name,g.surname,g.content,g.experience.id) from Graduate g")
+
 @Entity
 @Data
 @Table(name = "graduate")
@@ -22,6 +26,10 @@ public class Graduate {
 
     @Column(name = "content")
     private String content;
+
+    @Lob
+    @Column(name = "image_data")
+    private byte[] imageData;
 
     @ManyToOne
     @JoinColumn(name = "experience_id", nullable = false)

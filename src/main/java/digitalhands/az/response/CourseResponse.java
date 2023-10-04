@@ -3,16 +3,13 @@ package digitalhands.az.response;
 import lombok.Data;
 
 @Data
-public class GraduateResponse {
+public class CourseResponse {
 
     private Long id;
     private String name;
-    private String surname;
-
-
-
-
+    private String title;
     private String content;
-    private Long experienceId;
+    private byte[] imageData;
+    private Long categoryId;
 
 }

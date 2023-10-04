@@ -16,6 +16,7 @@ import digitalhands.az.request.BlogPostRequest;
 import digitalhands.az.response.BlogPostResponse;
 import digitalhands.az.wrapper.BlogPostWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BlogPostService {
@@ -62,7 +64,7 @@ public class BlogPostService {
             } else
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     public ResponseEntity<List<BlogPostWrapper>> getAllBlogs() {
@@ -77,6 +79,19 @@ public class BlogPostService {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
+    }
+
+    public void deleteBlogPost(Long userId, Long blogPostId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+        if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
+            BlogPost blogPost = blogPostRepository.findById(blogPostId).orElseThrow(
+                    () -> new BlogPostNotFoundException(ErrorMessage.BLOG_POST_NOT_FOUND));
+            if (Objects.nonNull(blogPost)) {
+                blogPostRepository.deleteById(blogPostId);
+                log.info("deleteBlogPost {}", blogPost);
+            }
+        }
     }
 
 }
