@@ -29,7 +29,7 @@ public class BlogPostController {
         return blogPostService.updateBlog(blogPostRequest, userId);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/getAll")
     public ResponseEntity<List<BlogPostWrapper>> getAllBlogs() {
         return blogPostService.getAllBlogs();
     }
@@ -38,6 +38,12 @@ public class BlogPostController {
     public ResponseEntity<BlogPostResponse> getBlogById(@PathVariable Long blogId) {
         return blogPostService.getBlogById(blogId);
 
+    }
+
+    @DeleteMapping("/{userId}/delete/{blogPostId}")
+    public void deleteBlogPost(@PathVariable(name = "userId") Long userId,
+                               @PathVariable(name = "blogPostId") Long blogPostId) {
+        blogPostService.deleteBlogPost(userId, blogPostId);
     }
 
 }

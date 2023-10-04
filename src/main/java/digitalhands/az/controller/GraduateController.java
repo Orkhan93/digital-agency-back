@@ -3,9 +3,12 @@ package digitalhands.az.controller;
 import digitalhands.az.request.GraduateRequest;
 import digitalhands.az.response.GraduateResponse;
 import digitalhands.az.service.GraduateService;
+import digitalhands.az.wrapper.GraduateWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/graduate")
@@ -29,6 +32,11 @@ public class GraduateController {
     @GetMapping("/get/{userId}")
     public ResponseEntity<GraduateResponse> getGraduateById(@PathVariable(name = "userId") Long userId) {
         return graduateService.getGraduateById(userId);
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<GraduateWrapper>> getAllGraduates() {
+        return graduateService.getALlGraduates();
     }
 
     @DeleteMapping("/{userId}/delete/{graduateId}")
