@@ -1,13 +1,15 @@
 package digitalhands.az.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@NamedQuery(name = "Course.getALlCourses",
+@NamedQuery(name = "Course.getAllCourses",
         query = "select new digitalhands.az.wrapper.CourseWrapper" +
                 "(c.id,c.name,c.title,c.content,c.imageData,c.category.id) from Course c")
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "course")
 public class Course {
 

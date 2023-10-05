@@ -104,4 +104,11 @@ public class CustomExceptionHandler {
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
 
+    @ExceptionHandler(CourseNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handlerCourseNotFoundException(CourseNotFoundException exception) {
+        log.error("handlerCourseNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_EXTENDED.name(), exception.getMessage());
+    }
+
 }

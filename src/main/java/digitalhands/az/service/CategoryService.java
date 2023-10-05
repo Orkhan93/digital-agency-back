@@ -81,6 +81,7 @@ public class CategoryService {
             return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.fromModelToResponse(category));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
     public void deleteById(Long userId, Long categoryId) {

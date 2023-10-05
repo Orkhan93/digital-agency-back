@@ -5,7 +5,6 @@ import digitalhands.az.response.CollectionResponse;
 import digitalhands.az.service.CollectionService;
 import digitalhands.az.wrapper.CollectionWrapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

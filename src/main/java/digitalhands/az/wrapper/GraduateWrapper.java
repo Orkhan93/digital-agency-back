@@ -1,11 +1,13 @@
 package digitalhands.az.wrapper;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter@AllArgsConstructor
 @NoArgsConstructor
 public class GraduateWrapper {
 

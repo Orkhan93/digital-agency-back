@@ -1,8 +1,9 @@
 package digitalhands.az.response;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.Data;
-
-@Data
+@Setter
+@Getter
 public class AuthenticationResponse {
 
     private String jwtToken;

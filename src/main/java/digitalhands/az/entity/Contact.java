@@ -1,7 +1,8 @@
 package digitalhands.az.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -9,7 +10,8 @@ import java.util.List;
         query = "select new digitalhands.az.wrapper.ContactWrapper(c.id,c.name) from Contact c")
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "contact")
 public class Contact {
 

@@ -1,9 +1,11 @@
 package digitalhands.az.request;
 
 import digitalhands.az.enums.UserRole;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class UserRequest {
 
     private Long id;
