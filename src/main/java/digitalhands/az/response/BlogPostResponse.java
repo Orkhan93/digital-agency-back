@@ -1,10 +1,12 @@
 package digitalhands.az.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Setter
+@Getter
 public class BlogPostResponse {
 
     private Long id;

@@ -14,9 +14,9 @@ import digitalhands.az.repository.GraduateRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.GraduateRequest;
 import digitalhands.az.response.GraduateResponse;
-import digitalhands.az.wrapper.BlogPostWrapper;
 import digitalhands.az.wrapper.GraduateWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GraduateService {
@@ -77,11 +78,14 @@ public class GraduateService {
     }
 
     public void deleteGraduate(Long userId, Long graduateId) {
-        userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+        if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             graduateRepository.findById(graduateId).orElseThrow(
                     () -> new GraduateNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
-                graduateRepository.deleteById(graduateId);
+            graduateRepository.deleteById(graduateId);
+        } else
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }

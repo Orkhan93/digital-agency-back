@@ -1,10 +1,13 @@
 package digitalhands.az.wrapper;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeacherWrapper {
@@ -14,9 +17,5 @@ public class TeacherWrapper {
     private String about;
     private byte[] imageData;
     private Long experienceId;
-
-    public TeacherWrapper(String nameAndSurname) {
-        this.nameAndSurname = nameAndSurname;
-    }
 
 }

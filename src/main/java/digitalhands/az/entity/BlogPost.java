@@ -3,14 +3,16 @@ package digitalhands.az.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @NamedQuery(name = "BlogPost.getAllBlogPosts", query = "select new digitalhands.az.wrapper.BlogPostWrapper(b.id,b.title,b.content,b.creationDate) from BlogPost b")
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "blog_post")
 public class BlogPost {
 

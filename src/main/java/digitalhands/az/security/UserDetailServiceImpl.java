@@ -4,6 +4,7 @@ import digitalhands.az.entity.User;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.repository.UserRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+
+    @Getter
     private User userDetail;
 
     public UserDetailServiceImpl(UserRepository userRepository) {
@@ -32,10 +35,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if (user == null) throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
         return new org.springframework.security.core.userdetails.User(user.getEmail(),
                 new BCryptPasswordEncoder().encode(user.getPassword()), new ArrayList<>());
-    }
-
-    public User getUserDetail() {
-        return userDetail;
     }
 
 }

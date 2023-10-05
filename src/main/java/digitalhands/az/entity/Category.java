@@ -1,14 +1,16 @@
 package digitalhands.az.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @NamedQuery(name = "Category.getAllCategories",
         query = "select new digitalhands.az.wrapper.CategoryWrapper(c.id,collection.name,c.collection.id) from Category  c")
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "category")
 public class Category {
 

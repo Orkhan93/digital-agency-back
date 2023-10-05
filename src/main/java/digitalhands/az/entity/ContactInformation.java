@@ -1,14 +1,16 @@
 package digitalhands.az.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @NamedQuery(name = "ContactInformation.getAllContactInformation",
         query = "select new digitalhands.az.wrapper.ContactInformationWrapper" +
                 "(c.id,c.name,content,c.address,c.email,c.phone,c.contact.id) from ContactInformation c")
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "contact_intormation")
 public class ContactInformation {
 

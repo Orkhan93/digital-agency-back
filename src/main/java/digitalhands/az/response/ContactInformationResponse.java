@@ -1,8 +1,10 @@
 package digitalhands.az.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class ContactInformationResponse {
 
     private Long id;

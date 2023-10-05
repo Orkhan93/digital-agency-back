@@ -2,14 +2,16 @@ package digitalhands.az.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @NamedQuery(name = "Graduate.getAllGraduate",
         query = "select new digitalhands.az.wrapper.GraduateWrapper" +
                 "(g.id,g.name,g.surname,g.content,g.experience.id) from Graduate g")
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "graduate")
 public class Graduate {
 

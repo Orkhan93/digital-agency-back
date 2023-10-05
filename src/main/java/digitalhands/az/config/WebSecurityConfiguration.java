@@ -1,6 +1,5 @@
 package digitalhands.az.config;
 
-import digitalhands.az.enums.UserRole;
 import digitalhands.az.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

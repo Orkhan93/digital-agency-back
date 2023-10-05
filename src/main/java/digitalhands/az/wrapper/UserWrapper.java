@@ -1,8 +1,11 @@
 package digitalhands.az.wrapper;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 public class UserWrapper {
 
     private Long id;
@@ -10,13 +13,5 @@ public class UserWrapper {
     private String email;
     private String username;
     private String status;
-
-    public UserWrapper(Long id, String name, String email, String username, String status) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.status = status;
-        this.username = username;
-    }
 
 }

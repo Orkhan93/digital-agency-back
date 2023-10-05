@@ -18,8 +18,8 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @PostMapping("/add/{userId}")
-    public ResponseEntity<TeacherResponse> createBlog(@RequestBody TeacherRequest teacherRequest,
-                                                      @PathVariable Long userId) {
+    public ResponseEntity<TeacherResponse> createTeacher(@RequestBody TeacherRequest teacherRequest,
+                                                         @PathVariable Long userId) {
         return teacherService.createTeacher(teacherRequest, userId);
     }
 
@@ -45,6 +45,7 @@ public class TeacherController {
     public void deleteAllTeachers(@PathVariable Long userId) {
         teacherService.deleteAllTeachers(userId);
     }
+
     @DeleteMapping("/{userId}/delete/{teacherId}")
     public void deleteCategory(@PathVariable Long userId,
                                @PathVariable Long teacherId) {
