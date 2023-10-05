@@ -12,5 +12,6 @@ public class ErrorMessage {
     public static final String COLLECTION_NOT_FOUND = "Collection not found : ";
     public static final String TEACHER_NOT_FOUND = "Teacher not found : ";
     public static final String UNAUTHORIZED_USER = "Unauthorized user : ";
+    public static final String CONTACT_NOT_FOUND = "Contact not found : ";
 
 }

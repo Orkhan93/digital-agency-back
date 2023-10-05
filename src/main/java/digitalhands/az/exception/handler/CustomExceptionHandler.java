@@ -83,4 +83,11 @@ public class CustomExceptionHandler {
         return new ExceptionResponse(UNAUTHORIZED.name(), exception.getMessage());
     }
 
+    @ExceptionHandler(ContactNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handlerContactNotFoundException(ContactNotFoundException exception) {
+        log.error("handlerContactNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_EXTENDED.name(), exception.getMessage());
+    }
+
 }
