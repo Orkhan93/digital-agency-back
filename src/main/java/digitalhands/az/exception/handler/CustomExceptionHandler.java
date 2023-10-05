@@ -87,7 +87,14 @@ public class CustomExceptionHandler {
     @ResponseStatus(NOT_FOUND)
     public ExceptionResponse handlerContactNotFoundException(ContactNotFoundException exception) {
         log.error("handlerContactNotFoundException {}", exception.getMessage());
-        return new ExceptionResponse(NOT_EXTENDED.name(), exception.getMessage());
+        return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
+    }
+
+    @ExceptionHandler(ContactInformationNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handlerContactInformationNotFoundException(ContactInformationNotFoundException exception) {
+        log.error("handlerContactInformationNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
 
 }
