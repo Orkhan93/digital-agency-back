@@ -3,6 +3,8 @@ package digitalhands.az.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @NamedQuery(name = "Contact.getAllContacts",
         query = "select new digitalhands.az.wrapper.ContactWrapper(c.id,c.name) from Contact c")
 
@@ -18,5 +20,8 @@ public class Contact {
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ContactInformation> contactInformations;
 
 }
