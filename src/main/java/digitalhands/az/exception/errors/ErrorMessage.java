@@ -14,5 +14,6 @@ public class ErrorMessage {
     public static final String UNAUTHORIZED_USER = "Unauthorized user : ";
     public static final String CONTACT_NOT_FOUND = "Contact not found : ";
     public static final String CONTACT_INFORMATION_NOT_FOUND = "Contact-Information not found : ";
+    public static final String CATEGORY_NOT_FOUND = "Category not found : ";
 
 }

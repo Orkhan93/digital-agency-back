@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@NamedQuery(name = "Category.getALlCategory",
+@NamedQuery(name = "Category.getAllCategories",
         query = "select new digitalhands.az.wrapper.CategoryWrapper(c.id,collection.name,c.collection.id) from Category  c")
 @Entity
 @Data

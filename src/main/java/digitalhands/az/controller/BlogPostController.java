@@ -34,10 +34,9 @@ public class BlogPostController {
         return blogPostService.getAllBlogs();
     }
 
-    @GetMapping("/get/{blogId}")
-    public ResponseEntity<BlogPostResponse> getBlogById(@PathVariable Long blogId) {
-        return blogPostService.getBlogById(blogId);
-
+    @GetMapping("/get/{blogPostId}")
+    public ResponseEntity<BlogPostResponse> getBlogById(@PathVariable Long blogPostId) {
+        return blogPostService.getBlogById(blogPostId);
     }
 
     @DeleteMapping("/{userId}/delete/{blogPostId}")

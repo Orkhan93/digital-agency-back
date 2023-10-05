@@ -97,4 +97,11 @@ public class CustomExceptionHandler {
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handlerCategoryNotFoundException(CategoryNotFoundException exception) {
+        log.error("handlerCategoryNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
+    }
+
 }
