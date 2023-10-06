@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @NamedQuery(name = "Course.getAllCourses",
         query = "select new digitalhands.az.wrapper.CourseWrapper" +
                 "(c.name,c.title,c.content,c.imageData) from Course c")
@@ -34,5 +36,16 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", imageData=" + Arrays.toString(imageData) +
+                '}';
+    }
 
 }

@@ -27,4 +27,17 @@ public class Collection {
             ,fetch = FetchType.LAZY)
     private List<Category> categories;
 
+    @OneToMany(mappedBy = "collection"
+            , cascade = CascadeType.ALL
+            ,fetch = FetchType.LAZY)
+    private List<Corporate> corporates;
+
+    @Override
+    public String toString() {
+        return "Collection{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 }

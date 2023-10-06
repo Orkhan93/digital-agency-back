@@ -1,15 +1,16 @@
 package digitalhands.az.service;
 
-import digitalhands.az.entity.Category;
+import digitalhands.az.entity.Collection;
 import digitalhands.az.entity.Corporate;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.CategoryNotFoundException;
+import digitalhands.az.exception.CollectionNotFoundException;
 import digitalhands.az.exception.CorporateNotFoundException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.CorporateMapper;
-import digitalhands.az.repository.CategoryRepository;
+import digitalhands.az.repository.CollectionRepository;
 import digitalhands.az.repository.CorporateRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.CorporateRequest;
@@ -30,7 +31,7 @@ import java.util.Objects;
 public class CorporateService {
 
     private final CorporateRepository corporateRepository;
-    private final CategoryRepository categoryRepository;
+    private final CollectionRepository collectionRepository;
     private final UserRepository userRepository;
     private final CorporateMapper corporateMapper;
 
@@ -38,10 +39,10 @@ public class CorporateService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            Category category = categoryRepository.findById(corporateRequest.getCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
+            Collection collection = collectionRepository.findById(corporateRequest.getCollectionId())
+                    .orElseThrow(() -> new CollectionNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
             Corporate corporate = corporateMapper.fromRequestToModel(corporateRequest);
-            corporate.setCategory(category);
+            corporate.setCollection(collection);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(corporateMapper.fromModelToResponse(corporateRepository.save(corporate)));
         }
@@ -56,11 +57,11 @@ public class CorporateService {
                     .orElseThrow(
                             () -> new CorporateNotFoundException(ErrorMessage.CORPORATE_NOT_FOUND));
             if (Objects.nonNull(corporate)) {
-                Category category = categoryRepository.findById(corporateRequest.getCategoryId())
+                Collection collection = collectionRepository.findById(corporateRequest.getCollectionId())
                         .orElseThrow(
-                                () -> new CategoryNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
+                                () -> new CategoryNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
                 Corporate updatedCorporate = corporateMapper.fromRequestToModel(corporateRequest);
-                updatedCorporate.setCategory(category);
+                updatedCorporate.setCollection(collection);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(corporateMapper.fromModelToResponse(corporateRepository.save(updatedCorporate)));
             }

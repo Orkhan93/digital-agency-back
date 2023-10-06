@@ -31,9 +31,12 @@ public class Category {
             ,fetch = FetchType.LAZY)
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "category"
-            ,cascade = CascadeType.ALL
-            ,fetch = FetchType.LAZY)
-    private List<Corporate> corporates;
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 
 }

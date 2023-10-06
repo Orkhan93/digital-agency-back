@@ -16,6 +16,6 @@ public class CorporateWrapper {
     private String title;
     private String content;
     private String imageData;
-    private Long categoryId;
+    private Long collectionId;
 
 }

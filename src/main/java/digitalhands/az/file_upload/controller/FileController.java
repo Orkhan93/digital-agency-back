@@ -19,7 +19,7 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<FileResponse> uploadVideo(@RequestParam("file") MultipartFile file) throws IOException {
-         return fileService.saveVideo(file);
+        return fileService.saveVideo(file);
     }
 
     @GetMapping("/download/{id}")

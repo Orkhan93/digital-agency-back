@@ -83,6 +83,7 @@ public class UserService {
         }
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);
+        log.info("changePassword {}", user);
     }
 
     private boolean validationSignUp(UserSignUpRequest signUpRequest) {
