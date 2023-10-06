@@ -1,5 +1,6 @@
 package digitalhands.az.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,11 @@ import lombok.Setter;
 public class TeacherResponse {
 
     private Long id;
-    private String nameAndSurname;
+    private String name;
+    private String surname;
     private String about;
+
+    @JsonIgnore
     private Long experienceId;
 
 }

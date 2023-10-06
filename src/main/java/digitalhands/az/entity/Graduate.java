@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @NamedQuery(name = "Graduate.getAllGraduate",
         query = "select new digitalhands.az.wrapper.GraduateWrapper" +
-                "(g.id,g.name,g.surname,g.content,g.experience.id) from Graduate g")
+                "(g.name,g.surname,g.content) from Graduate g")
 
 @Entity
 @Setter

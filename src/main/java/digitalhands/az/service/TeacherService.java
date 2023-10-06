@@ -38,7 +38,7 @@ public class TeacherService {
             Experience experience = experienceRepository.findById(teacherRequest.getExperienceId()).orElseThrow(
                     () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
             Teacher teacher = teacherMapper.fromRequestToModel(teacherRequest);
-            teacher.setExperienceTeacher(experience);//TODO set eliyende experience id null verir
+            teacher.setExperience(experience);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(teacherMapper.fromModelToResponse(teacherRepository.save(teacher)));
         } else
@@ -56,7 +56,7 @@ public class TeacherService {
                 Experience experience = experienceRepository.findById(teacherRequest.getExperienceId()).orElseThrow(
                         () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
                 Teacher teacher = teacherMapper.fromRequestToModel(teacherRequest);
-                teacher.setExperienceTeacher(experience);
+                teacher.setExperience(experience);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(teacherMapper.fromModelToResponse(teacherRepository.save(teacher)));
             }
@@ -97,8 +97,7 @@ public class TeacherService {
                             () -> new TeacherNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
             teacherRepository.deleteById(teacherId);
             log.info("deleteById {}", teacher);
-        } else
-            throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
+        }
     }
 
 }

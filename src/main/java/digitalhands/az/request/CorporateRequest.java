@@ -1,18 +1,17 @@
-package digitalhands.az.response;
+package digitalhands.az.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class CourseResponse {
+@Setter
+public class CorporateRequest {
 
     private Long id;
     private String name;
     private String title;
     private String content;
-    @JsonIgnore
+    private String imageData;
     private Long categoryId;
 
 }

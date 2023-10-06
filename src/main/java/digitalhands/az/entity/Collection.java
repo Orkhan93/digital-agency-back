@@ -22,7 +22,9 @@ public class Collection {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "collection"
+            , cascade = CascadeType.ALL
+            ,fetch = FetchType.LAZY)
     private List<Category> categories;
 
 }

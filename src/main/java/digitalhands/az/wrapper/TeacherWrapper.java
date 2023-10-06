@@ -12,10 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TeacherWrapper {
 
-    private Long id;
-    private String nameAndSurname;
+    private String name;
+    private String surname;
     private String about;
     private byte[] imageData;
-    private Long experienceId;
 
 }
