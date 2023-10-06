@@ -4,7 +4,6 @@ import digitalhands.az.entity.Experience;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.ExperienceNotFoundException;
-import digitalhands.az.exception.UnauthorizedUserException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.ExperienceMapper;
