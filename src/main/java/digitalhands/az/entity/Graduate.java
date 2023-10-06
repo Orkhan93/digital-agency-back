@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @NamedQuery(name = "Graduate.getAllGraduate",
         query = "select new digitalhands.az.wrapper.GraduateWrapper" +
                 "(g.name,g.surname,g.content) from Graduate g")
@@ -37,5 +39,16 @@ public class Graduate {
     @JoinColumn(name = "experience_id", nullable = false)
     @JsonIgnore
     private Experience experience;
+
+    @Override
+    public String toString() {
+        return "Graduate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", content='" + content + '\'' +
+                ", imageData=" + Arrays.toString(imageData) +
+                '}';
+    }
 
 }

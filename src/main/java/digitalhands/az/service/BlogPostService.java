@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +44,7 @@ public class BlogPostService {
                     () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
             BlogPost blogPost = blogPostMapper.fromRequestToModel(blogPostRequest);
             blogPost.setExperience(experience);
+            blogPost.setCreationDate(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(blogPost)));
         } else
@@ -59,7 +61,8 @@ public class BlogPostService {
                 Experience experience = experienceRepository.findById(blogPostRequest.getExperienceId()).orElseThrow(
                         () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
                 BlogPost updatedBlog = blogPostMapper.fromRequestToModel(blogPostRequest);
-                blogPost.setExperience(experience);
+                updatedBlog.setExperience(experience);
+                updatedBlog.setCreationDate(LocalDateTime.now());
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(updatedBlog)));
             } else

@@ -38,4 +38,16 @@ public class ContactInformation {
     @JoinColumn(name = "contact_id", nullable = false)
     private Contact contact;
 
+    @Override
+    public String toString() {
+        return "ContactInformation{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", content='" + content + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
+
 }

@@ -37,4 +37,14 @@ public class BlogPost {
     @JsonIgnore
     private Experience experience;
 
+    @Override
+    public String toString() {
+        return "BlogPost{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", creationDate=" + creationDate +
+                '}';
+    }
+
 }

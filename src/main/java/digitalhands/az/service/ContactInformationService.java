@@ -16,6 +16,7 @@ import digitalhands.az.request.ContactInformationRequest;
 import digitalhands.az.response.ContactInformationResponse;
 import digitalhands.az.wrapper.ContactInformationWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ContactInformationService {
@@ -83,11 +85,16 @@ public class ContactInformationService {
     }
 
     public void deleteContactInformationById(Long userId, Long contactInformationId) {
-        userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
-        contactInformationRepository.findById(contactInformationId)
-                .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
-        contactInformationRepository.deleteById(contactInformationId);
+        if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
+            ContactInformation contactInformation = contactInformationRepository.findById(contactInformationId)
+                    .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
+            if (Objects.nonNull(contactInformation)) {
+                contactInformationRepository.deleteById(contactInformationId);
+                log.info("deleteContactInformationById {}", contactInformation);
+            }
+        }
     }
 
 }

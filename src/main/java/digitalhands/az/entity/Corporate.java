@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @NamedQuery(name = "Corporate.getAllCorporate",
         query = "select new digitalhands.az.wrapper.CorporateWrapper" +
-                "(c.id,c.name,c.title,c.content,c.imageData,c.category.id) from Corporate c")
+                "(c.id,c.name,c.title,c.content,c.imageData,c.collection.id) from Corporate c")
 
 @Entity
 @Getter
@@ -32,7 +32,18 @@ public class Corporate {
     private String imageData;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "collection_id", nullable = false)
+    private Collection collection;
+
+    @Override
+    public String toString() {
+        return "Corporate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", imageData='" + imageData + '\'' +
+                '}';
+    }
 
 }
