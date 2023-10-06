@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @NamedQuery(name = "Category.getAllCategories",
-        query = "select new digitalhands.az.wrapper.CategoryWrapper(c.id,collection.name,c.collection.id) from Category  c")
+        query = "select new digitalhands.az.wrapper.CategoryWrapper(collection.name) from Category  c")
 @Entity
 @Setter
 @Getter
@@ -26,7 +26,14 @@ public class Category {
     @JoinColumn(name = "collection_id", nullable = false)
     private Collection collection;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category"
+            ,cascade = CascadeType.ALL
+            ,fetch = FetchType.LAZY)
     private List<Course> courses;
+
+    @OneToMany(mappedBy = "category"
+            ,cascade = CascadeType.ALL
+            ,fetch = FetchType.LAZY)
+    private List<Corporate> corporates;
 
 }

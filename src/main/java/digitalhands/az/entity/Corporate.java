@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@NamedQuery(name = "Course.getAllCourses",
-        query = "select new digitalhands.az.wrapper.CourseWrapper" +
-                "(c.name,c.title,c.content,c.imageData) from Course c")
+@NamedQuery(name = "Corporate.getAllCorporate",
+        query = "select new digitalhands.az.wrapper.CorporateWrapper" +
+                "(c.id,c.name,c.title,c.content,c.imageData,c.category.id) from Corporate c")
+
 @Entity
-@Setter
 @Getter
-@Table(name = "course")
-public class Course {
+@Setter
+@Table(name = "corporate")
+public class Corporate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +28,8 @@ public class Course {
     @Column(name = "content")
     private String content;
 
-    @Lob
-    @Column(name = "imageData")
-    private byte[] imageData;
+    @Column(name = "image")
+    private String imageData;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

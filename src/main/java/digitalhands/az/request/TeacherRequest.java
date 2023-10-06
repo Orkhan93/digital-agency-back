@@ -8,7 +8,8 @@ import lombok.Setter;
 public class TeacherRequest {
 
     private Long id;
-    private String nameAndSurname;
+    private String name;
+    private String surname;
     private String about;
     private Long experienceId;
 

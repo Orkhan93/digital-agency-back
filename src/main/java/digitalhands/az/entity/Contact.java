@@ -24,6 +24,6 @@ public class Contact {
     private String name;
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ContactInformation> contactInformations;
+    private List<ContactInformation> contactInformation;
 
 }

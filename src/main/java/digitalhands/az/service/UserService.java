@@ -42,7 +42,8 @@ public class UserService {
                 User saved = userMapper.fromUserSignUpRequestToModel(userSignUpRequest);
                 saved.setPassword(encryptionService.encryptPassword(userSignUpRequest.getPassword()));
                 saved.setUserRole(UserRole.ADMIN);
-                return ResponseEntity.ok(userRepository.save(saved));
+                return ResponseEntity.status(CREATED)
+                        .body(userRepository.save(saved));
             } else {
                 log.error("userSignUpRequest {}", userSignUpRequest);
                 return ResponseEntity.status(BAD_REQUEST).body(USER_ALREADY_EXISTS);
@@ -61,7 +62,7 @@ public class UserService {
             } else
                 return INVALID_DATA;
         }
-        log.error("login {}", userLoginRequest);
+        log.error("login {}", optionalUser);
         return BAD_CREDENTIALS;
     }
 
@@ -74,8 +75,8 @@ public class UserService {
     public void changePassword(ChangePasswordRequest changePasswordRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + userId));
-        if (!Objects.equals(user.getPassword(), changePasswordRequest.getOldPassword())) {
-            throw new IncorrectPasswordException(ErrorMessage.NOT_EQUALS_PASSWORD);
+        if (!encryptionService.verifyPassword(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new IncorrectPasswordException(ErrorMessage.INCORRECT_PASSWORD);
         }
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmPassword())) {
             throw new IncorrectPasswordException(ErrorMessage.NOT_MATCHES);

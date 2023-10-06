@@ -1,5 +1,6 @@
 package digitalhands.az.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ public class CategoryResponse {
 
     private Long id;
     private String name;
+    @JsonIgnore
     private Long collectionId;
 
 }

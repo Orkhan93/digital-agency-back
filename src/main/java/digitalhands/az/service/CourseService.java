@@ -32,13 +32,12 @@ public class CourseService {
 
     public ResponseEntity<CourseResponse> createCourse(CourseRequest courseRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new CourseNotFoundException(ErrorMessage.COURSE_NOT_FOUND));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Category category = categoryRepository.findById(courseRequest.getCategoryId()).orElseThrow(
                     () -> new CategoryNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
             Course course = courseMapper.fromRequestToModel(courseRequest);
             course.setCategory(category);
-            System.out.println("Ss");
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(courseMapper.fromModelToResponse
                             (courseRepository.save(course)));
@@ -49,12 +48,12 @@ public class CourseService {
 
     public ResponseEntity<CourseResponse> updateCourse(CourseRequest courseRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new CourseNotFoundException(ErrorMessage.USER_NOT_FOUND));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Course course = courseRepository.findById(courseRequest.getId())
                     .orElseThrow(() -> new CourseNotFoundException(ErrorMessage.COURSE_NOT_FOUND));
             if (Objects.nonNull(course)) {
-                Category category = categoryRepository.findById(courseRequest.getId())
+                Category category = categoryRepository.findById(courseRequest.getCategoryId())
                         .orElseThrow(() -> new CategoryNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
                 Course updateCourse = courseMapper.fromRequestToModel(courseRequest);
                 updateCourse.setCategory(category);

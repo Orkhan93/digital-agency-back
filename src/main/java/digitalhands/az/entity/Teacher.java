@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 @NamedQuery(name = "Teacher.getAllTeachers",
         query = "select new digitalhands.az.wrapper.TeacherWrapper" +
-                "(t.id,t.nameAndSurname,t.about,t.imageData,t.experienceTeacher.id)from Teacher t")
+                "(t.name,t.surname,t.about,t.imageData)from Teacher t")
 @Entity
 @Setter
 @Getter
@@ -17,7 +17,8 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nameAndSurname;
+    private String name;
+    private String surname;
     private String about;
 
     @Lob
@@ -27,6 +28,16 @@ public class Teacher {
     @ManyToOne
     @JoinColumn(name = "experience_id")
     @JsonIgnore
-    private Experience experienceTeacher;
+    private Experience experience;
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", about='" + about + '\'' +
+                '}';
+    }
 
 }

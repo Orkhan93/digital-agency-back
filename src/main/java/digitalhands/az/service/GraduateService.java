@@ -56,7 +56,7 @@ public class GraduateService {
                     () -> new GraduateNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
             if (Objects.nonNull(findGraduate)) {
                 Experience experience = experienceRepository.findById(graduateRequest.getExperienceId()).orElseThrow(
-                        () -> new ExperienceNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
+                        () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
                 Graduate graduate = graduateMapper.fromRequestToModel(graduateRequest);
                 graduate.setExperience(experience);
                 return ResponseEntity.status(HttpStatus.OK)
