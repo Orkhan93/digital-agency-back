@@ -40,10 +40,7 @@ public class Experience {
 
     @Override
     public String toString() {
-        return "Experience{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "Experience{id=%d, name='%s'}".formatted(id, name);
     }
 
 }

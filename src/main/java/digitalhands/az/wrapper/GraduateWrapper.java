@@ -14,4 +14,5 @@ public class GraduateWrapper {
     private String name;
     private String surname;
     private String content;
+    private String imageData;
 }

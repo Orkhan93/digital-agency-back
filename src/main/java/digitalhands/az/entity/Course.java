@@ -29,9 +29,8 @@ public class Course {
     @Column(name = "content")
     private String content;
 
-    @Lob
     @Column(name = "imageData")
-    private byte[] imageData;
+    private String imageData;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -39,13 +38,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", imageData=" + Arrays.toString(imageData) +
-                '}';
+        return "Course{id=%d, name='%s', title='%s', content='%s', imageData='%s'}"
+                .formatted(id, name, title, content, imageData);
     }
-
 }

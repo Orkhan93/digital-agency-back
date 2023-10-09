@@ -23,15 +23,9 @@ public class Contact {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ContactInformation> contactInformation;
-
     @Override
     public String toString() {
-        return "Contact{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "Contact{id=%d, name='%s'}".formatted(id, name);
     }
 
 }

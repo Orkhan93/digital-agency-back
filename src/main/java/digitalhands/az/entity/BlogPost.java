@@ -8,7 +8,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@NamedQuery(name = "BlogPost.getAllBlogPosts", query = "select new digitalhands.az.wrapper.BlogPostWrapper(b.id,b.title,b.content,b.creationDate) from BlogPost b")
+@NamedQuery(name = "BlogPost.getAllBlogPosts", query = "select new digitalhands.az.wrapper.BlogPostWrapper" +
+        "(b.id,b.title,b.content,b.creationDate,b.imageOfBlogPost) from BlogPost b")
 
 @Entity
 @Setter
@@ -32,6 +33,9 @@ public class BlogPost {
     @JsonFormat(pattern = "dd-mm-yyyy'T'HH:mm")
     private LocalDateTime creationDate;
 
+    @Column(name = "image")
+    private String imageOfBlogPost;
+
     @ManyToOne
     @JoinColumn(name = "experience_id", nullable = false)
     @JsonIgnore
@@ -39,12 +43,8 @@ public class BlogPost {
 
     @Override
     public String toString() {
-        return "BlogPost{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", creationDate=" + creationDate +
-                '}';
+        return "BlogPost{id=%d, title='%s', content='%s', creationDate=%s}"
+                .formatted(id, title, content, creationDate);
     }
 
 }

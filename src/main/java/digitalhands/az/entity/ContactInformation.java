@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @NamedQuery(name = "ContactInformation.getAllContactInformation",
         query = "select new digitalhands.az.wrapper.ContactInformationWrapper" +
-                "(c.id,c.name,content,c.address,c.email,c.phone,c.contact.id) from ContactInformation c")
+                "(c.id,content,c.address,c.email,c.phone) from ContactInformation c")
 
 @Entity
 @Setter
@@ -19,9 +19,6 @@ public class ContactInformation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "content")
     private String content;
@@ -35,20 +32,10 @@ public class ContactInformation {
     @Column(name = "address")
     private String address;
 
-    @ManyToOne
-    @JoinColumn(name = "contact_id", nullable = false)
-    private Contact contact;
-
     @Override
     public String toString() {
-        return "ContactInformation{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", content='" + content + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return "ContactInformation{id=%d, content='%s', phone='%s', email='%s', address='%s'}"
+                .formatted(id, content, phone, email, address);
     }
 
 }

@@ -16,5 +16,6 @@ public class BlogPostWrapper {
     private String title;
     private String content;
     private LocalDateTime creationDate;
+    private String imageOfBlogPost;
 
 }

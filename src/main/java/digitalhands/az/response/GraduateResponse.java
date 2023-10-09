@@ -12,6 +12,8 @@ public class GraduateResponse {
     private String name;
     private String surname;
     private String content;
+    private String imageData;
+
     @JsonIgnore
     private Long experienceId;
 

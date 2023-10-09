@@ -37,13 +37,8 @@ public class Corporate {
 
     @Override
     public String toString() {
-        return "Corporate{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", imageData='" + imageData + '\'' +
-                '}';
+        return "Corporate{id=%d, name='%s', title='%s', content='%s', imageData='%s'}"
+                .formatted(id, name, title, content, imageData);
     }
 
 }

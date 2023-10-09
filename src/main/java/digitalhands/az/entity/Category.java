@@ -33,10 +33,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "Category{id=%d, name='%s'}".formatted(id, name);
     }
 
 }
