@@ -22,6 +22,18 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  mail:
+    host: smtp.gmail.com
+    username: rouvsen@gmail.com
+    password: pass
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
 encryption:
   salt:
     rounds: 10
