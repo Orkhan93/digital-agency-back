@@ -11,6 +11,7 @@ public class GraduateRequest {
     private String name;
     private String surname;
     private String content;
+    private String imageData;
     private Long experienceId;
 
 }

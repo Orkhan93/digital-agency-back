@@ -12,6 +12,7 @@ public class TeacherResponse {
     private String name;
     private String surname;
     private String about;
+    private String imageData;
 
     @JsonIgnore
     private Long experienceId;

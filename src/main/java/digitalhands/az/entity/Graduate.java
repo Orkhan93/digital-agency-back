@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @NamedQuery(name = "Graduate.getAllGraduate",
         query = "select new digitalhands.az.wrapper.GraduateWrapper" +
-                "(g.name,g.surname,g.content) from Graduate g")
+                "(g.name,g.surname,g.content,g.imageData) from Graduate g")
 
 @Entity
 @Setter
@@ -31,9 +31,8 @@ public class Graduate {
     @Column(name = "content")
     private String content;
 
-    @Lob
     @Column(name = "image_data")
-    private byte[] imageData;
+    private String imageData;
 
     @ManyToOne
     @JoinColumn(name = "experience_id", nullable = false)
@@ -42,13 +41,8 @@ public class Graduate {
 
     @Override
     public String toString() {
-        return "Graduate{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", content='" + content + '\'' +
-                ", imageData=" + Arrays.toString(imageData) +
-                '}';
+        return "Graduate{id=%d, name='%s', surname='%s', content='%s', imageData='%s'}"
+                .formatted(id, name, surname, content, imageData);
     }
 
 }

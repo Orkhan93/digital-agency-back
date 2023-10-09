@@ -14,6 +14,6 @@ public class CourseWrapper {
     private String name;
     private String title;
     private String content;
-    private byte[] imageData;
+    private String imageData;
 
 }

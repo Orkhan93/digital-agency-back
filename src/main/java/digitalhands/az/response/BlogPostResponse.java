@@ -13,6 +13,7 @@ public class BlogPostResponse {
     private String title;
     private String content;
     private LocalDateTime creationDate;
+    private String imageOfBlogPost;
     private Long experienceId;
 
 }

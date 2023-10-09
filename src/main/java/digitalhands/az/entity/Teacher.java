@@ -21,9 +21,8 @@ public class Teacher {
     private String surname;
     private String about;
 
-    @Lob
     @Column(name = "image_data")
-    private byte[] imageData;
+    private String imageData;
 
     @ManyToOne
     @JoinColumn(name = "experience_id")
@@ -32,12 +31,8 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return "Teacher{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", about='" + about + '\'' +
-                '}';
+        return "Teacher{id=%d, name='%s', surname='%s', about='%s', imageData='%s'}"
+                .formatted(id, name, surname, about, imageData);
     }
 
 }
