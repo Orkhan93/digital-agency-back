@@ -1,15 +1,12 @@
 package digitalhands.az.service;
 
-import digitalhands.az.entity.Experience;
 import digitalhands.az.entity.Graduate;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
-import digitalhands.az.exception.ExperienceNotFoundException;
 import digitalhands.az.exception.GraduateNotFoundException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.GraduateMapper;
-import digitalhands.az.repository.ExperienceRepository;
 import digitalhands.az.repository.GraduateRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.GraduateRequest;
@@ -32,16 +29,12 @@ public class GraduateService {
     private final GraduateRepository graduateRepository;
     private final UserRepository userRepository;
     private final GraduateMapper graduateMapper;
-    private final ExperienceRepository experienceRepository;
 
     public ResponseEntity<GraduateResponse> createGraduate(GraduateRequest graduateRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            Experience experience = experienceRepository.findById(graduateRequest.getExperienceId()).orElseThrow(
-                    () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
             Graduate graduate = graduateMapper.fromRequestToModel(graduateRequest);
-            graduate.setExperience(experience);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(graduateMapper.fromModelToResponse(graduateRepository.save(graduate)));
         }
@@ -55,10 +48,7 @@ public class GraduateService {
             Graduate findGraduate = graduateRepository.findById(graduateRequest.getId()).orElseThrow(
                     () -> new GraduateNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
             if (Objects.nonNull(findGraduate)) {
-                Experience experience = experienceRepository.findById(graduateRequest.getExperienceId()).orElseThrow(
-                        () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
                 Graduate graduate = graduateMapper.fromRequestToModel(graduateRequest);
-                graduate.setExperience(experience);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(graduateMapper.fromModelToResponse(graduateRepository.save(graduate)));
             } else

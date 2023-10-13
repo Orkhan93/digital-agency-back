@@ -24,8 +24,8 @@ spring:
       max-request-size: 10MB
   mail:
     host: smtp.gmail.com
-    username: rouvsen@gmail.com
-    password: pass
+    username: your gmail
+    password: your shared key password
     port: 587
     properties:
       mail:

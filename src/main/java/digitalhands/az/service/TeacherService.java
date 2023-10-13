@@ -1,13 +1,13 @@
 package digitalhands.az.service;
 
-import digitalhands.az.entity.Experience;
 import digitalhands.az.entity.Teacher;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
-import digitalhands.az.exception.*;
+import digitalhands.az.exception.BlogPostNotFoundException;
+import digitalhands.az.exception.TeacherNotFoundException;
+import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.TeacherMapper;
-import digitalhands.az.repository.ExperienceRepository;
 import digitalhands.az.repository.TeacherRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.TeacherRequest;
@@ -29,16 +29,12 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final TeacherMapper teacherMapper;
-    private final ExperienceRepository experienceRepository;
 
     public ResponseEntity<TeacherResponse> createTeacher(TeacherRequest teacherRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            Experience experience = experienceRepository.findById(teacherRequest.getExperienceId()).orElseThrow(
-                    () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
             Teacher teacher = teacherMapper.fromRequestToModel(teacherRequest);
-            teacher.setExperience(experience);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(teacherMapper.fromModelToResponse(teacherRepository.save(teacher)));
         } else
@@ -53,10 +49,7 @@ public class TeacherService {
                     .findById(teacherRequest.getId()).orElseThrow(
                             () -> new TeacherNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
             if (Objects.nonNull(findTeacher)) {
-                Experience experience = experienceRepository.findById(teacherRequest.getExperienceId()).orElseThrow(
-                        () -> new ExperienceNotFoundException(ErrorMessage.EXPERIENCE_NOT_FOUND));
                 Teacher teacher = teacherMapper.fromRequestToModel(teacherRequest);
-                teacher.setExperience(experience);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(teacherMapper.fromModelToResponse(teacherRepository.save(teacher)));
             }

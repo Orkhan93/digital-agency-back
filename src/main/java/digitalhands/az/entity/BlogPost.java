@@ -1,7 +1,6 @@
 package digitalhands.az.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,10 +35,6 @@ public class BlogPost {
     @Column(name = "image")
     private String imageOfBlogPost;
 
-    @ManyToOne
-    @JoinColumn(name = "experience_id", nullable = false)
-    @JsonIgnore
-    private Experience experience;
 
     @Override
     public String toString() {
