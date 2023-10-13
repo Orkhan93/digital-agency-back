@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BlogPostWrapper {
 
-    private Long id;
     private String title;
     private String content;
     private LocalDateTime creationDate;

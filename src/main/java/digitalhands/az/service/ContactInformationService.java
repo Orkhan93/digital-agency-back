@@ -35,7 +35,6 @@ public class ContactInformationService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(contactInformationMapper.fromModelToResponse(contactInformationRepository
                             .save(contactInformationMapper.fromRequestToModel(contactInformationRequest))));

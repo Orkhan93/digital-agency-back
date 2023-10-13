@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ContactInformationWrapper {
 
-    private Long id;
     private String phone;
     private String content;
     private String email;

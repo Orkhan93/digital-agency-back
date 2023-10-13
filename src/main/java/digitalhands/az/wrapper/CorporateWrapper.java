@@ -11,7 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CorporateWrapper {
 
-    private Long id;
     private String name;
     private String title;
     private String content;

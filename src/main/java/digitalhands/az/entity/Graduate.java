@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Arrays;
-
 @NamedQuery(name = "Graduate.getAllGraduate",
         query = "select new digitalhands.az.wrapper.GraduateWrapper" +
                 "(g.name,g.surname,g.content,g.imageData) from Graduate g")

@@ -45,6 +45,7 @@ public class BlogPostService {
             BlogPost blogPost = blogPostMapper.fromRequestToModel(blogPostRequest);
             blogPost.setExperience(experience);
             blogPost.setCreationDate(LocalDateTime.now());
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(blogPost)));
         } else
