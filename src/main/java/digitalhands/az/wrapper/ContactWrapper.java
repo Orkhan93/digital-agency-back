@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 public class ContactWrapper {
 
-    private Long id;
     private String name;
 
 }

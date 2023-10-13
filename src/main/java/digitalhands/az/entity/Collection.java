@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @NamedQuery(name = "Collection.getAllCollection",
-        query = "select new digitalhands.az.wrapper.CollectionWrapper(c.id,c.name) from Collection c")
+        query = "select new digitalhands.az.wrapper.CollectionWrapper(c.name) from Collection c")
 @Entity
 @Setter
 @Getter

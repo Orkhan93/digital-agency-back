@@ -1,6 +1,7 @@
 package digitalhands.az.exception.handler;
 
 import digitalhands.az.exception.*;
+import digitalhands.az.file_upload.exception.FileNotFoundException;
 import digitalhands.az.response.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -115,6 +116,12 @@ public class CustomExceptionHandler {
     @ResponseStatus(NOT_FOUND)
     public ExceptionResponse handlerCorporateNotFoundException(CorporateNotFoundException exception) {
         log.error("handlerCorporateNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
+    }
+    @ExceptionHandler(FileNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handlerFileNotFoundException(FileNotFoundException exception) {
+        log.error("handlerFileNotFoundException {}", exception.getMessage());
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
 

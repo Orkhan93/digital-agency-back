@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @NamedQuery(name = "Corporate.getAllCorporate",
         query = "select new digitalhands.az.wrapper.CorporateWrapper" +
-                "(c.id,c.name,c.title,c.content,c.imageData,c.collection.id) from Corporate c")
+                "(c.name,c.title,c.content,c.imageData,c.collection.id) from Corporate c")
 
 @Entity
 @Getter

@@ -11,7 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ExperienceWrapper {
 
-    private Long id;
     private String name;
 
 }

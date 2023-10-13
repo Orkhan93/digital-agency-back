@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @NamedQuery(name = "Experience.getAllExperiences",
-        query = "select new digitalhands.az.wrapper.ExperienceWrapper(e.id,e.name) from Experience e")
+        query = "select new digitalhands.az.wrapper.ExperienceWrapper(e.name) from Experience e")
 
 @Entity
 @Setter
