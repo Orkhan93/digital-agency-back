@@ -6,12 +6,12 @@ import lombok.Setter;
 
 @NamedQuery(name = "ContactInformation.getAllContactInformation",
         query = "select new digitalhands.az.wrapper.ContactInformationWrapper" +
-                "(content,c.address,c.email,c.phone) from ContactInformation c")
+                "(c.phone,c.content,c.email,c.address) from ContactInformation c")
 
 @Entity
 @Setter
 @Getter
-@Table(name = "contact_intormation")
+@Table(name = "contact_information")
 public class ContactInformation {
 
     @Id

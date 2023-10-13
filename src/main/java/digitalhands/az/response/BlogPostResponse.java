@@ -14,6 +14,5 @@ public class BlogPostResponse {
     private String content;
     private LocalDateTime creationDate;
     private String imageOfBlogPost;
-    private Long experienceId;
 
 }

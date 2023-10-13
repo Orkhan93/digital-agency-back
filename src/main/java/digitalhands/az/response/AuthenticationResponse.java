@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 public class AuthenticationResponse {
 
+    private Long id;
     private String jwtToken;
 
 }
