@@ -118,10 +118,18 @@ public class CustomExceptionHandler {
         log.error("handlerCorporateNotFoundException {}", exception.getMessage());
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
+
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
     public ExceptionResponse handlerFileNotFoundException(FileNotFoundException exception) {
         log.error("handlerFileNotFoundException {}", exception.getMessage());
+        return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
+    }
+
+    @ExceptionHandler(MaintenanceNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ExceptionResponse handleMaintenanceNotFoundException(MaintenanceNotFoundException exception) {
+        log.error("handleMaintenanceNotFoundException {}", exception.getMessage());
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
     }
 
