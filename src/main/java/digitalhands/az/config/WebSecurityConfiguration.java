@@ -56,7 +56,8 @@ public class WebSecurityConfiguration {
                         "/corporate/get/**", "/corporate/getAll",
                         "/teacher/get/**", "/teacher/getAll",
                         "/course/getAll", "/course/get/**",
-                        "/experience/get/**","/experience/getAll")
+                        "/experience/get/**", "/experience/getAll",
+                        "/maintenances/get/**", "/maintenances/getAll")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()
