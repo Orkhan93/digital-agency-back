@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @NamedQuery(name = "Maintenance.getAllMaintenances",
-        query = "select new digitalhands.az.wrapper.MaintenanceWrapper(m.id,m.title,m.content) from Maintenance m")
+        query = "select new digitalhands.az.wrapper.MaintenanceWrapper(m.id,m.title,m.content,m.imageData) from Maintenance m")
 
 @Entity
 @Getter
