@@ -33,7 +33,6 @@ spring:
           starttls:
             enable: true
           auth: true
-
 encryption:
   salt:
     rounds: 10
