@@ -10,5 +10,6 @@ public class MaintenanceResponse {
     private Long id;
     private String title;
     private String content;
+    private String imageData;
 
 }

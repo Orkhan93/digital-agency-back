@@ -10,5 +10,6 @@ public class MaintenanceRequest {
     private Long id;
     private String title;
     private String content;
+    private String imageData;
 
 }
