@@ -18,5 +18,6 @@ public class ErrorMessage {
     public static final String COURSE_NOT_FOUND = "Course not found : ";
     public static final String CORPORATE_NOT_FOUND = "Corporate not found : ";
     public static final String FILE_NOT_FOUND = "File not found : ";
+    public static final String MAINTENANCE_NOT_FOUND = "Maintenance not found : ";
 
 }

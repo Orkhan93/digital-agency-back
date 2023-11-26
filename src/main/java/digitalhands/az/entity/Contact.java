@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @NamedQuery(name = "Contact.getAllContacts",
-        query = "select new digitalhands.az.wrapper.ContactWrapper(c.id,c.name) from Contact c")
+        query = "select new digitalhands.az.wrapper.ContactWrapper(c.name) from Contact c")
 
 @Entity
 @Setter
@@ -23,7 +21,9 @@ public class Contact {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ContactInformation> contactInformation;
+    @Override
+    public String toString() {
+        return "Contact{id=%d, name='%s'}".formatted(id, name);
+    }
 
 }

@@ -15,6 +15,6 @@ public class TeacherWrapper {
     private String name;
     private String surname;
     private String about;
-    private byte[] imageData;
+    private String  imageData;
 
 }

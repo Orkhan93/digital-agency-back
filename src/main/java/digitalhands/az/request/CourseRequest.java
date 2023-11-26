@@ -11,6 +11,7 @@ public class CourseRequest {
     private String name;
     private String title;
     private String content;
+    private String imageData;
     private Long categoryId;
 
 }

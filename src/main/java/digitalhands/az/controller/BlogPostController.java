@@ -2,9 +2,11 @@ package digitalhands.az.controller;
 
 import digitalhands.az.request.BlogPostRequest;
 import digitalhands.az.response.BlogPostResponse;
+import digitalhands.az.response.BlogPostResponseList;
 import digitalhands.az.service.BlogPostService;
 import digitalhands.az.wrapper.BlogPostWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,23 +22,23 @@ public class BlogPostController {
     @PostMapping("/add/{userId}")
     public ResponseEntity<BlogPostResponse> createBlog(@RequestBody BlogPostRequest blogPostRequest,
                                                        @PathVariable Long userId) {
-        return blogPostService.createBlog(blogPostRequest, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(blogPostService.createBlog(blogPostRequest, userId));
     }
 
     @PutMapping("/update/{userId}")
     public ResponseEntity<BlogPostResponse> updateBlog(@RequestBody BlogPostRequest blogPostRequest,
                                                        @PathVariable Long userId) {
-        return blogPostService.updateBlog(blogPostRequest, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(blogPostService.updateBlog(blogPostRequest, userId));
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<BlogPostWrapper>> getAllBlogs() {
-        return blogPostService.getAllBlogs();
+    public ResponseEntity<BlogPostResponseList> getAllBlogs() {
+        return ResponseEntity.status(HttpStatus.OK).body(blogPostService.getAllBlogs());
     }
 
     @GetMapping("/get/{blogId}")
     public ResponseEntity<BlogPostResponse> getBlogById(@PathVariable Long blogId) {
-        return blogPostService.getBlogById(blogId);
+        return ResponseEntity.status(HttpStatus.OK).body(blogPostService.getBlogById(blogId));
 
     }
 

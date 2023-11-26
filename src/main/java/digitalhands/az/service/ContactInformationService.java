@@ -1,21 +1,19 @@
 package digitalhands.az.service;
 
-import digitalhands.az.entity.Contact;
 import digitalhands.az.entity.ContactInformation;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.ContactInformationNotFoundException;
-import digitalhands.az.exception.ContactNotFoundException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.ContactInformationMapper;
 import digitalhands.az.repository.ContactInformationRepository;
-import digitalhands.az.repository.ContactRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.ContactInformationRequest;
 import digitalhands.az.response.ContactInformationResponse;
 import digitalhands.az.wrapper.ContactInformationWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,12 +21,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ContactInformationService {
 
     private final ContactInformationRepository contactInformationRepository;
-    private final ContactRepository contactRepository;
     private final UserRepository userRepository;
     private final ContactInformationMapper contactInformationMapper;
 
@@ -37,13 +35,9 @@ public class ContactInformationService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            Contact contact = contactRepository.findById(contactInformationRequest.getContactId())
-                    .orElseThrow(() -> new ContactNotFoundException(ErrorMessage.CONTACT_NOT_FOUND));
-            ContactInformation contactInformation =
-                    contactInformationMapper.fromRequestToModel(contactInformationRequest);
-            contactInformation.setContact(contact);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(contactInformationMapper.fromModelToResponse(contactInformation));
+                    .body(contactInformationMapper.fromModelToResponse(contactInformationRepository
+                            .save(contactInformationMapper.fromRequestToModel(contactInformationRequest))));
         } else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -56,10 +50,7 @@ public class ContactInformationService {
             ContactInformation contactInformation = contactInformationRepository.findById(contactInformationRequest.getId())
                     .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
             if (Objects.nonNull(contactInformation)) {
-                Contact contact = contactRepository.findById(contactInformationRequest.getContactId())
-                        .orElseThrow(() -> new ContactNotFoundException(ErrorMessage.CONTACT_NOT_FOUND));
                 ContactInformation updated = contactInformationMapper.fromRequestToModel(contactInformationRequest);
-                updated.setContact(contact);
                 return ResponseEntity.status(HttpStatus.OK).body(contactInformationMapper.fromModelToResponse(
                         contactInformationRepository.save(updated)));
             }
@@ -83,11 +74,16 @@ public class ContactInformationService {
     }
 
     public void deleteContactInformationById(Long userId, Long contactInformationId) {
-        userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
-        contactInformationRepository.findById(contactInformationId)
-                .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
-        contactInformationRepository.deleteById(contactInformationId);
+        if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
+            ContactInformation contactInformation = contactInformationRepository.findById(contactInformationId)
+                    .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
+            if (Objects.nonNull(contactInformation)) {
+                contactInformationRepository.deleteById(contactInformationId);
+                log.info("deleteContactInformationById {}", contactInformation);
+            }
+        }
     }
 
 }
