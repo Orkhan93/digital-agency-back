@@ -1,5 +1,9 @@
 package digitalhands.az.controller;
 
+import digitalhands.az.entity.User;
+import digitalhands.az.exception.UserNotFoundException;
+import digitalhands.az.exception.errors.ErrorMessage;
+import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.ChangePasswordRequest;
 import digitalhands.az.request.UserLoginRequest;
 import digitalhands.az.request.UserSignUpRequest;
@@ -7,9 +11,11 @@ import digitalhands.az.response.AuthenticationResponse;
 import digitalhands.az.response.UserResponse;
 import digitalhands.az.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -19,6 +25,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
@@ -26,14 +33,20 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
+    public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest) {
         String jwt = userService.login(userLoginRequest);
         if (jwt == null) {
             return ResponseEntity.status(BAD_REQUEST).build();
         } else {
-            AuthenticationResponse response = new AuthenticationResponse();
-            response.setJwtToken(jwt);
-            return ResponseEntity.ok(response);
+            User user = userRepository.getUserByEmail(userLoginRequest.getEmail()).orElseThrow(
+                    ()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+            if (Objects.nonNull(user)) {
+                AuthenticationResponse response = new AuthenticationResponse();
+                response.setJwtToken(jwt);
+                response.setId(user.getId());
+                return ResponseEntity.ok(response);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorMessage.USER_NOT_FOUND);
         }
     }
 

@@ -11,11 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CorporateWrapper {
 
-    private Long id;
     private String name;
     private String title;
     private String content;
     private String imageData;
-    private Long categoryId;
+    private Long collectionId;
 
 }

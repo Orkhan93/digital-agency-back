@@ -12,6 +12,7 @@ public class CourseResponse {
     private String name;
     private String title;
     private String content;
+    private String imageData;
     @JsonIgnore
     private Long categoryId;
 

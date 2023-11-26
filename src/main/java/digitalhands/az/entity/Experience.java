@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+@NamedQuery(name = "Experience.getAllExperiences",
+        query = "select new digitalhands.az.wrapper.ExperienceWrapper(e.name) from Experience e")
 
 @Entity
 @Setter
@@ -20,18 +21,9 @@ public class Experience {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "experience",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    private List<BlogPost> blogPostList;
+    @Override
+    public String toString() {
+        return "Experience{id=%d, name='%s'}".formatted(id, name);
+    }
 
-    @OneToMany(mappedBy = "experience",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    private List<Graduate> graduateList;
-
-    @OneToMany(mappedBy = "experience",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    private List<Teacher> teacherList;
 }

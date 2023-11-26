@@ -3,9 +3,12 @@ package digitalhands.az.controller;
 import digitalhands.az.request.ExperienceRequest;
 import digitalhands.az.response.ExperienceResponse;
 import digitalhands.az.service.ExperienceService;
+import digitalhands.az.wrapper.ExperienceWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/experience")
@@ -29,6 +32,11 @@ public class ExperienceController {
     @GetMapping("/get/{experienceId}")
     public ResponseEntity<ExperienceResponse> getExperienceById(@PathVariable(name = "experienceId") Long experienceId) {
         return experienceService.getExperienceById(experienceId);
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<ExperienceWrapper>> getAllExperiences() {
+        return experienceService.getAllExperiences();
     }
 
     @DeleteMapping("/{userId}/delete/{experienceId}")

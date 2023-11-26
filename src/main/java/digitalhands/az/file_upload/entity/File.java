@@ -19,9 +19,11 @@ public class File {
     private Long id;
 
     private String name;
+
     private String contentType;
 
     @Lob
+    @Column(columnDefinition = "LONG VARBINARY")
     private byte[] fileData;
 
 }

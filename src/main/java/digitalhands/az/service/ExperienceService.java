@@ -4,7 +4,6 @@ import digitalhands.az.entity.Experience;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.ExperienceNotFoundException;
-import digitalhands.az.exception.UnauthorizedUserException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.ExperienceMapper;
@@ -12,12 +11,14 @@ import digitalhands.az.repository.ExperienceRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.ExperienceRequest;
 import digitalhands.az.response.ExperienceResponse;
+import digitalhands.az.wrapper.ExperienceWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -62,6 +63,10 @@ public class ExperienceService {
         return ResponseEntity.status(HttpStatus.OK).body(experienceMapper.fromModelToResponse(experience));
     }
 
+    public ResponseEntity<List<ExperienceWrapper>> getAllExperiences() {
+        return ResponseEntity.status(HttpStatus.OK).body(experienceRepository.getAllExperiences());
+    }
+
     public void deleteExperience(Long userId, Long experienceId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
@@ -72,8 +77,7 @@ public class ExperienceService {
                 experienceRepository.deleteById(experienceId);
                 log.info("deleteExperience {}", experience);
             }
-        } else
-            throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
+        }
     }
 
 }

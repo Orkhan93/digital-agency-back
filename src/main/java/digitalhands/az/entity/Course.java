@@ -27,12 +27,16 @@ public class Course {
     @Column(name = "content")
     private String content;
 
-    @Lob
     @Column(name = "imageData")
-    private byte[] imageData;
+    private String imageData;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Override
+    public String toString() {
+        return "Course{id=%d, name='%s', title='%s', content='%s', imageData='%s'}"
+                .formatted(id, name, title, content, imageData);
+    }
 }

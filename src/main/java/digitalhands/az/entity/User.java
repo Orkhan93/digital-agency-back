@@ -33,4 +33,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Override
+    public String toString() {
+        return "User{id=%d, name='%s', username='%s', email='%s', password='%s', userRole=%s}"
+                .formatted(id, name, username, email, password, userRole);
+    }
+
 }
