@@ -65,7 +65,7 @@ public class TeacherService {
 
     public ResponseEntity<TeacherResponse> getTeacherById(Long teacherID) {
         Teacher teacher = teacherRepository.findById(teacherID).orElseThrow(
-                () -> new BlogPostNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
+                () -> new TeacherNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
         if (Objects.nonNull(teacher)) {
             return ResponseEntity.status(HttpStatus.OK).body(teacherMapper.fromModelToResponse(teacher));
         }

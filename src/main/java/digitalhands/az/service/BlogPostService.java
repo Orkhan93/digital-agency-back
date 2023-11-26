@@ -12,6 +12,7 @@ import digitalhands.az.repository.BlogPostRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.BlogPostRequest;
 import digitalhands.az.response.BlogPostResponse;
+import digitalhands.az.response.BlogPostResponseList;
 import digitalhands.az.wrapper.BlogPostWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,48 +33,47 @@ public class BlogPostService {
     private final UserRepository userRepository;
     private final BlogPostMapper blogPostMapper;
 
-    public ResponseEntity<BlogPostResponse> createBlog(BlogPostRequest blogPostRequest, Long userId) {
+    public BlogPostResponse createBlog(BlogPostRequest blogPostRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             BlogPost blogPost = blogPostMapper.fromRequestToModel(blogPostRequest);
             blogPost.setCreationDate(LocalDateTime.now());
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(blogPost)));
-        } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return blogPostMapper.fromModelToResponse(blogPostRepository.save(blogPost));
+        }
+        throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
+        // TODO UnauthorizedException (String code) - modified
     }
 
-    public ResponseEntity<BlogPostResponse> updateBlog(BlogPostRequest blogPostRequest, Long userId) {
+    public BlogPostResponse updateBlog(BlogPostRequest blogPostRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             BlogPost blogPost = blogPostRepository.findById(blogPostRequest.getId()).orElseThrow(
-                    () -> new BlogPostNotFoundException(ErrorMessage.BLOG_POST_NOT_FOUND));
-            if (Objects.nonNull(blogPost)) {
+                    () -> new BlogPostNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.BLOG_POST_NOT_FOUND));
+            if (Objects.isNull(blogPost)) {
+                throw new BlogPostNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.BLOG_POST_NOT_FOUND);
+            } else {
                 BlogPost updatedBlog = blogPostMapper.fromRequestToModel(blogPostRequest);
                 updatedBlog.setCreationDate(LocalDateTime.now());
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(blogPostMapper.fromModelToResponse(blogPostRepository.save(updatedBlog)));
-            } else
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return blogPostMapper.fromModelToResponse(blogPostRepository.save(updatedBlog));
+            }
         } else
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
     }
 
-    public ResponseEntity<List<BlogPostWrapper>> getAllBlogs() {
-        return ResponseEntity.status(HttpStatus.OK).body(blogPostRepository.getAllBlogPosts());
+    public BlogPostResponseList getAllBlogs() {
+        List<BlogPost> all = blogPostRepository.findAll();
+        BlogPostResponseList list = new BlogPostResponseList();
+        List<BlogPostResponse> blogPostResponses = blogPostMapper.fromModelListToResponseList(all);
+        list.setBlogPostResponses(blogPostResponses);
+        return list;
     }
 
-    public ResponseEntity<BlogPostResponse> getBlogById(Long blogId) {
+    public BlogPostResponse getBlogById(Long blogId) {
         BlogPost blogPost = blogPostRepository.findById(blogId).orElseThrow(
-                () -> new BlogPostNotFoundException(ErrorMessage.BLOG_POST_NOT_FOUND));
-        if (Objects.nonNull(blogPost)) {
-            return ResponseEntity.status(HttpStatus.OK).body(blogPostMapper.fromModelToResponse(blogPost));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+                () -> new BlogPostNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.BLOG_POST_NOT_FOUND));
+        return blogPostMapper.fromModelToResponse(blogPost);
     }
 
     public void deleteBlogPost(Long userId, Long blogPostId) {
@@ -81,7 +81,7 @@ public class BlogPostService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             BlogPost blogPost = blogPostRepository.findById(blogPostId).orElseThrow(
-                    () -> new BlogPostNotFoundException(ErrorMessage.BLOG_POST_NOT_FOUND));
+                    () -> new BlogPostNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.BLOG_POST_NOT_FOUND));
             if (Objects.nonNull(blogPost)) {
                 blogPostRepository.deleteById(blogPostId);
                 log.info("deleteBlogPost {}", blogPost);
