@@ -40,7 +40,8 @@ public class CorporateService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Collection collection = collectionRepository.findById(corporateRequest.getCollectionId())
-                    .orElseThrow(() -> new CollectionNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
+                    .orElseThrow(() -> new CollectionNotFoundException(HttpStatus.NOT_FOUND.name(),
+                            ErrorMessage.COLLECTION_NOT_FOUND));
             Corporate corporate = corporateMapper.fromRequestToModel(corporateRequest);
             corporate.setCollection(collection);
             return ResponseEntity.status(HttpStatus.CREATED)
