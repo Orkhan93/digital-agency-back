@@ -4,6 +4,7 @@ import digitalhands.az.entity.ContactInformation;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.ContactInformationNotFoundException;
+import digitalhands.az.exception.UnauthorizedUserException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.ContactInformationMapper;
@@ -11,11 +12,10 @@ import digitalhands.az.repository.ContactInformationRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.ContactInformationRequest;
 import digitalhands.az.response.ContactInformationResponse;
-import digitalhands.az.wrapper.ContactInformationWrapper;
+import digitalhands.az.response.ContactInformationResponseList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,47 +30,46 @@ public class ContactInformationService {
     private final UserRepository userRepository;
     private final ContactInformationMapper contactInformationMapper;
 
-    public ResponseEntity<ContactInformationResponse> createContactInformation
+    public ContactInformationResponse createContactInformation
             (ContactInformationRequest contactInformationRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(contactInformationMapper.fromModelToResponse(contactInformationRepository
-                            .save(contactInformationMapper.fromRequestToModel(contactInformationRequest))));
-        } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return contactInformationMapper.fromModelToResponse(contactInformationRepository
+                    .save(contactInformationMapper.fromRequestToModel(contactInformationRequest)));
+        }
+        throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<ContactInformationResponse> updateContactInformation
+    public ContactInformationResponse updateContactInformation
             (ContactInformationRequest contactInformationRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             ContactInformation contactInformation = contactInformationRepository.findById(contactInformationRequest.getId())
                     .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
-            if (Objects.nonNull(contactInformation)) {
+            if (Objects.isNull(contactInformation)) {
+                throw new ContactInformationNotFoundException(HttpStatus.NOT_FOUND.name());
+            } else {
                 ContactInformation updated = contactInformationMapper.fromRequestToModel(contactInformationRequest);
-                return ResponseEntity.status(HttpStatus.OK).body(contactInformationMapper.fromModelToResponse(
-                        contactInformationRepository.save(updated)));
+                return contactInformationMapper.fromModelToResponse(contactInformationRepository.save(updated));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<ContactInformationResponse> getContactInformationById(Long contactInformationId) {
+    public ContactInformationResponse getContactInformationById(Long contactInformationId) {
         ContactInformation contactInformation = contactInformationRepository.findById(contactInformationId)
                 .orElseThrow(() -> new ContactInformationNotFoundException(ErrorMessage.CONTACT_INFORMATION_NOT_FOUND));
-        if (Objects.nonNull(contactInformation)) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(contactInformationMapper.fromModelToResponse(contactInformation));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return contactInformationMapper.fromModelToResponse(contactInformation);
     }
 
-    public ResponseEntity<List<ContactInformationWrapper>> getAllContactInformation() {
-        return ResponseEntity.status(HttpStatus.OK).body(contactInformationRepository.getAllContactInformation());
+    public ContactInformationResponseList getAllContactInformation() {
+        List<ContactInformation> all = contactInformationRepository.findAll();
+        ContactInformationResponseList list = new ContactInformationResponseList();
+        List<ContactInformationResponse> responses = contactInformationMapper.fromModelListToResponseList(all);
+        list.setContactInformationResponses(responses);
+        return list;
     }
 
     public void deleteContactInformationById(Long userId, Long contactInformationId) {
