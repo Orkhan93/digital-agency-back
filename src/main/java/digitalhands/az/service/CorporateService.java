@@ -59,7 +59,8 @@ public class CorporateService {
             if (Objects.nonNull(corporate)) {
                 Collection collection = collectionRepository.findById(corporateRequest.getCollectionId())
                         .orElseThrow(
-                                () -> new CategoryNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
+                                () -> new CategoryNotFoundException(HttpStatus.NOT_FOUND.name(),
+                                        ErrorMessage.CATEGORY_NOT_FOUND));
                 Corporate updatedCorporate = corporateMapper.fromRequestToModel(corporateRequest);
                 updatedCorporate.setCollection(collection);
                 return ResponseEntity.status(HttpStatus.OK)

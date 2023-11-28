@@ -13,11 +13,9 @@ import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.BlogPostRequest;
 import digitalhands.az.response.BlogPostResponse;
 import digitalhands.az.response.BlogPostResponseList;
-import digitalhands.az.wrapper.BlogPostWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
