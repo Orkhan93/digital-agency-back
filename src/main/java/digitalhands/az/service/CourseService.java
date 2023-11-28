@@ -35,7 +35,7 @@ public class CourseService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Category category = categoryRepository.findById(courseRequest.getCategoryId()).orElseThrow(
-                    () -> new CategoryNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
+                    () -> new CategoryNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.CATEGORY_NOT_FOUND));
             Course course = courseMapper.fromRequestToModel(courseRequest);
             course.setCategory(category);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,7 +54,8 @@ public class CourseService {
                     .orElseThrow(() -> new CourseNotFoundException(ErrorMessage.COURSE_NOT_FOUND));
             if (Objects.nonNull(course)) {
                 Category category = categoryRepository.findById(courseRequest.getCategoryId())
-                        .orElseThrow(() -> new CategoryNotFoundException(ErrorMessage.CATEGORY_NOT_FOUND));
+                        .orElseThrow(() -> new CategoryNotFoundException(HttpStatus.NOT_FOUND.name(),
+                                ErrorMessage.CATEGORY_NOT_FOUND));
                 Course updateCourse = courseMapper.fromRequestToModel(courseRequest);
                 updateCourse.setCategory(category);
                 return ResponseEntity.status(HttpStatus.OK)
