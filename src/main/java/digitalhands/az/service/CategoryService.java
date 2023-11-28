@@ -39,7 +39,8 @@ public class CategoryService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Collection collection = collectionRepository.findById(categoryRequest.getCollectionId()).orElseThrow(
-                    () -> new CollectionNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
+                    () -> new CollectionNotFoundException(HttpStatus.NOT_FOUND.name(),
+                            ErrorMessage.COLLECTION_NOT_FOUND));
             Category category = categoryMapper.fromRequestToModel(categoryRequest);
             category.setCollection(collection);
             return categoryMapper.fromModelToResponse(categoryRepository.save(category));
@@ -59,7 +60,8 @@ public class CategoryService {
                 throw new CategoryNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.CATEGORY_NOT_FOUND);
             } else {
                 Collection collection = collectionRepository.findById(categoryRequest.getCollectionId()).orElseThrow(
-                        () -> new CollectionNotFoundException(ErrorMessage.COLLECTION_NOT_FOUND));
+                        () -> new CollectionNotFoundException(HttpStatus.NOT_FOUND.name(),
+                                ErrorMessage.COLLECTION_NOT_FOUND));
                 Category category = categoryMapper.fromRequestToModel(categoryRequest);
                 category.setCollection(collection);
                 return categoryMapper.fromModelToResponse(categoryRepository.save(category));
