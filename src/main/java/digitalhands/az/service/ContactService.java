@@ -12,6 +12,7 @@ import digitalhands.az.repository.ContactRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.ContactRequest;
 import digitalhands.az.response.ContactResponse;
+import digitalhands.az.response.ContactResponseList;
 import digitalhands.az.wrapper.ContactWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,40 +32,44 @@ public class ContactService {
     private final UserRepository userRepository;
     private final ContactMapper contactMapper;
 
-    public ResponseEntity<ContactResponse> createContact(ContactRequest contactRequest, Long userId) {
+    public ContactResponse createContact(ContactRequest contactRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(contactMapper.fromModelToResponse
-                            (contactRepository.save(contactMapper.fromRequestToModel(contactRequest))));
+            return contactMapper.fromModelToResponse
+                    (contactRepository.save(contactMapper.fromRequestToModel(contactRequest)));
         } else
             throw new UnauthorizedUserException(ErrorMessage.UNAUTHORIZED_USER);
     }
 
-    public ResponseEntity<ContactResponse> updateContact(ContactRequest contactRequest, Long userId) {
+    public ContactResponse updateContact(ContactRequest contactRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Contact contact = contactRepository.findById(contactRequest.getId()).orElseThrow(
-                    () -> new ContactNotFoundException(ErrorMessage.CONTACT_NOT_FOUND));
-            if (Objects.nonNull(contact)) {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(contactMapper.fromModelToResponse
-                                (contactRepository.save(contactMapper.fromRequestToModel(contactRequest))));
+                    () -> new ContactNotFoundException(HttpStatus.NOT_FOUND.name(),
+                            ErrorMessage.CONTACT_NOT_FOUND));
+            if (Objects.isNull(contact)) {
+                throw new ContactNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.CONTACT_NOT_FOUND);
             }
+            return contactMapper.fromModelToResponse
+                    (contactRepository.save(contactMapper.fromRequestToModel(contactRequest)));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<List<ContactWrapper>> getAllContact() {
-        return ResponseEntity.status(HttpStatus.OK).body(contactRepository.getAllContacts());
+    public ContactResponseList getAllContact() {
+        List<Contact> all = contactRepository.findAll();
+        ContactResponseList list = new ContactResponseList();
+        List<ContactResponse> contactResponses = contactMapper.fromModelListToResponseList(all);
+        list.setContactResponses(contactResponses);
+        return list;
     }
 
-    public ResponseEntity<ContactResponse> getContactById(Long contactId) {
+    public ContactResponse getContactById(Long contactId) {
         Contact contact = contactRepository.findById(contactId).orElseThrow(
-                () -> new ContactNotFoundException(ErrorMessage.CONTACT_NOT_FOUND));
-        return ResponseEntity.status(HttpStatus.OK).body(contactMapper.fromModelToResponse(contact));
+                () -> new ContactNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.CONTACT_NOT_FOUND));
+        return contactMapper.fromModelToResponse(contact);
     }
 
     public void deleteContact(Long userId, Long contactId) {
@@ -72,7 +77,7 @@ public class ContactService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Contact contact = contactRepository.findById(contactId).orElseThrow(
-                    () -> new ContactNotFoundException(ErrorMessage.CONTACT_NOT_FOUND));
+                    () -> new ContactNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.CONTACT_NOT_FOUND));
             if (Objects.nonNull(contact)) {
                 contactRepository.deleteById(contactId);
                 log.info("deleteContact {}", contact);
