@@ -6,6 +6,8 @@ import digitalhands.az.response.CorporateResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
@@ -16,5 +18,7 @@ public interface CorporateMapper {
     CorporateResponse fromModelToResponse(Corporate corporate);
 
     CorporateResponse fromRequestToResponse(CorporateRequest corporateRequest);
+
+    List<CorporateResponse> fromModelListToResponseList(List<Corporate> corporates);
 
 }
