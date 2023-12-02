@@ -10,11 +10,10 @@ import digitalhands.az.repository.CourseRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.CourseRequest;
 import digitalhands.az.response.CourseResponse;
-import digitalhands.az.wrapper.CourseWrapper;
+import digitalhands.az.response.CourseResponseList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class CourseService {
     private final CourseMapper courseMapper;
     private final UserRepository userRepository;
 
-    public ResponseEntity<CourseResponse> createCourse(CourseRequest courseRequest, Long userId) {
+    public CourseResponse createCourse(CourseRequest courseRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
@@ -38,46 +37,44 @@ public class CourseService {
                     () -> new CategoryNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.CATEGORY_NOT_FOUND));
             Course course = courseMapper.fromRequestToModel(courseRequest);
             course.setCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(courseMapper.fromModelToResponse
-                            (courseRepository.save(course)));
+            return courseMapper.fromModelToResponse
+                    (courseRepository.save(course));
         } else
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
+            throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<CourseResponse> updateCourse(CourseRequest courseRequest, Long userId) {
+    public CourseResponse updateCourse(CourseRequest courseRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Course course = courseRepository.findById(courseRequest.getId())
-                    .orElseThrow(() -> new CourseNotFoundException(ErrorMessage.COURSE_NOT_FOUND));
+                    .orElseThrow(() -> new CourseNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.COURSE_NOT_FOUND));
             if (Objects.nonNull(course)) {
                 Category category = categoryRepository.findById(courseRequest.getCategoryId())
                         .orElseThrow(() -> new CategoryNotFoundException(HttpStatus.NOT_FOUND.name(),
                                 ErrorMessage.CATEGORY_NOT_FOUND));
                 Course updateCourse = courseMapper.fromRequestToModel(courseRequest);
                 updateCourse.setCategory(category);
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(courseMapper.fromModelToResponse
-                                (courseRepository.save(updateCourse)));
+                return courseMapper.fromModelToResponse
+                        (courseRepository.save(updateCourse));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<CourseResponse> getCourseById(Long courseId) {
+    public CourseResponse getCourseById(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(ErrorMessage.COURSE_NOT_FOUND));
-        if (Objects.nonNull(course)) {
-            return ResponseEntity.status(HttpStatus.OK).body(courseMapper.fromModelToResponse(course));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                .orElseThrow(() -> new CourseNotFoundException(HttpStatus.NOT_FOUND.name(),
+                        ErrorMessage.COURSE_NOT_FOUND));
+        return courseMapper.fromModelToResponse(course);
     }
 
-    public ResponseEntity<List<CourseWrapper>> getAllCourses() {
-        return ResponseEntity.status(HttpStatus.OK).body(courseRepository.getAllCourses());
+    public CourseResponseList getAllCourses() {
+        List<Course> all = courseRepository.findAll();
+        CourseResponseList list = new CourseResponseList();
+        List<CourseResponse> courseResponses = courseMapper.fromModelListToResponseList(all);
+        list.setCourseResponses(courseResponses);
+        return list;
     }
 
     public void deleteCourseById(Long userId, Long courseId) {
@@ -85,7 +82,8 @@ public class CourseService {
                 .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Course course = courseRepository.findById(courseId)
-                    .orElseThrow(() -> new CourseNotFoundException(ErrorMessage.COURSE_NOT_FOUND));
+                    .orElseThrow(() -> new CourseNotFoundException(HttpStatus.NOT_FOUND.name(),
+                            ErrorMessage.COURSE_NOT_FOUND));
             if (Objects.nonNull(course)) {
                 courseRepository.deleteById(courseId);
                 log.info("deleteCourseById {}", course);

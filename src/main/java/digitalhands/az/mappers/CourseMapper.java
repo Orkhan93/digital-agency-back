@@ -6,6 +6,8 @@ import digitalhands.az.response.CourseResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -16,5 +18,7 @@ public interface CourseMapper {
     Course fromRequestToModel(CourseRequest CourseRequest);
 
     CourseResponse fromModelToResponse(Course Course);
+
+    List<CourseResponse> fromModelListToResponseList(List<Course> courses);
 
 }
