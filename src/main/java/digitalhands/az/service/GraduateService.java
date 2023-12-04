@@ -4,6 +4,7 @@ import digitalhands.az.entity.Graduate;
 import digitalhands.az.entity.User;
 import digitalhands.az.enums.UserRole;
 import digitalhands.az.exception.GraduateNotFoundException;
+import digitalhands.az.exception.UnauthorizedUserException;
 import digitalhands.az.exception.UserNotFoundException;
 import digitalhands.az.exception.errors.ErrorMessage;
 import digitalhands.az.mappers.GraduateMapper;
@@ -11,7 +12,7 @@ import digitalhands.az.repository.GraduateRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.GraduateRequest;
 import digitalhands.az.response.GraduateResponse;
-import digitalhands.az.wrapper.GraduateWrapper;
+import digitalhands.az.response.GraduateResponseList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,41 +31,44 @@ public class GraduateService {
     private final UserRepository userRepository;
     private final GraduateMapper graduateMapper;
 
-    public ResponseEntity<GraduateResponse> createGraduate(GraduateRequest graduateRequest, Long userId) {
+    public GraduateResponse createGraduate(GraduateRequest graduateRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Graduate graduate = graduateMapper.fromRequestToModel(graduateRequest);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(graduateMapper.fromModelToResponse(graduateRepository.save(graduate)));
+            return graduateMapper.fromModelToResponse(graduateRepository.save(graduate));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<GraduateResponse> updateGraduate(GraduateRequest graduateRequest, Long userId) {
+    public GraduateResponse updateGraduate(GraduateRequest graduateRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Graduate findGraduate = graduateRepository.findById(graduateRequest.getId()).orElseThrow(
-                    () -> new GraduateNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
-            if (Objects.nonNull(findGraduate)) {
+                    () -> new GraduateNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.GRADUATE_NOT_FOUND));
+            if (Objects.isNull(findGraduate)) {
+                throw new GraduateNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.GRADUATE_NOT_FOUND);
+            } else {
                 Graduate graduate = graduateMapper.fromRequestToModel(graduateRequest);
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(graduateMapper.fromModelToResponse(graduateRepository.save(graduate)));
-            } else
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return graduateMapper.fromModelToResponse(graduateRepository.save(graduate));
+            }
+        }
+        throw new UnauthorizedUserException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<GraduateResponse> getGraduateById(Long graduateId) {
+    public GraduateResponse getGraduateById(Long graduateId) {
         Graduate graduate = graduateRepository.findById(graduateId).orElseThrow(
-                () -> new GraduateNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
-        return ResponseEntity.status(HttpStatus.OK).body(graduateMapper.fromModelToResponse(graduate));
+                () -> new GraduateNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.GRADUATE_NOT_FOUND));
+        return graduateMapper.fromModelToResponse(graduate);
     }
 
-    public ResponseEntity<List<GraduateWrapper>> getALlGraduates() {
-        return ResponseEntity.status(HttpStatus.OK).body(graduateRepository.getAllGraduate());
+    public GraduateResponseList getALlGraduates() {
+        List<Graduate> all = graduateRepository.findAll();
+        GraduateResponseList list = new GraduateResponseList();
+        List<GraduateResponse> graduateResponses = graduateMapper.fromModelListToResponseList(all);
+        list.setGraduateResponse(graduateResponses);
+        return list;
     }
 
     public void deleteGraduate(Long userId, Long graduateId) {
@@ -72,7 +76,7 @@ public class GraduateService {
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             graduateRepository.findById(graduateId).orElseThrow(
-                    () -> new GraduateNotFoundException(ErrorMessage.GRADUATE_NOT_FOUND));
+                    () -> new GraduateNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.GRADUATE_NOT_FOUND));
             graduateRepository.deleteById(graduateId);
         } else
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
