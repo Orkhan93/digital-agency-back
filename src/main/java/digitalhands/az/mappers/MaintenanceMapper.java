@@ -6,6 +6,8 @@ import digitalhands.az.response.MaintenanceResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
@@ -16,5 +18,7 @@ public interface MaintenanceMapper {
     MaintenanceResponse fromRequestToResponse(MaintenanceRequest maintenanceRequest);
 
     MaintenanceResponse fromModelToResponse(Maintenance maintenance);
+
+    List<MaintenanceResponse> fromModelListToResponseList(List<Maintenance> maintenances);
 
 }
