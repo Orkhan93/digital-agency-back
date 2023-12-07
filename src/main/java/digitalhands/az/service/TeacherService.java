@@ -12,11 +12,10 @@ import digitalhands.az.repository.TeacherRepository;
 import digitalhands.az.repository.UserRepository;
 import digitalhands.az.request.TeacherRequest;
 import digitalhands.az.response.TeacherResponse;
-import digitalhands.az.wrapper.TeacherWrapper;
+import digitalhands.az.response.TeacherResponseList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,46 +29,44 @@ public class TeacherService {
     private final UserRepository userRepository;
     private final TeacherMapper teacherMapper;
 
-    public ResponseEntity<TeacherResponse> createTeacher(TeacherRequest teacherRequest, Long userId) {
+    public TeacherResponse createTeacher(TeacherRequest teacherRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Teacher teacher = teacherMapper.fromRequestToModel(teacherRequest);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(teacherMapper.fromModelToResponse(teacherRepository.save(teacher)));
+            return teacherMapper.fromModelToResponse(teacherRepository.save(teacher));
         } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new TeacherNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.TEACHER_NOT_FOUND);
     }
 
-    public ResponseEntity<TeacherResponse> updateTeacher(TeacherRequest teacherRequest, Long userId) {
+    public TeacherResponse updateTeacher(TeacherRequest teacherRequest, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Teacher findTeacher = teacherRepository
                     .findById(teacherRequest.getId()).orElseThrow(
-                            () -> new TeacherNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
+                            () -> new TeacherNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.TEACHER_NOT_FOUND));
             if (Objects.nonNull(findTeacher)) {
                 Teacher teacher = teacherMapper.fromRequestToModel(teacherRequest);
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(teacherMapper.fromModelToResponse(teacherRepository.save(teacher)));
+                return teacherMapper.fromModelToResponse(teacherRepository.save(teacher));
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new TeacherNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.TEACHER_NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        throw new UserNotFoundException(HttpStatus.UNAUTHORIZED.name());
     }
 
-    public ResponseEntity<List<TeacherWrapper>> getAllTeachers() {
-        return ResponseEntity.status(HttpStatus.OK).body
-                (teacherRepository.getAllTeachers());
+    public TeacherResponseList getAllTeachers() {
+        List<Teacher> all = teacherRepository.findAll();
+        TeacherResponseList list = new TeacherResponseList();
+        List<TeacherResponse> teacherResponses = teacherMapper.fromModelListToResponseList(all);
+        list.setTeacherResponses(teacherResponses);
+        return list;
     }
 
-    public ResponseEntity<TeacherResponse> getTeacherById(Long teacherID) {
+    public TeacherResponse getTeacherById(Long teacherID) {
         Teacher teacher = teacherRepository.findById(teacherID).orElseThrow(
-                () -> new TeacherNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
-        if (Objects.nonNull(teacher)) {
-            return ResponseEntity.status(HttpStatus.OK).body(teacherMapper.fromModelToResponse(teacher));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                () -> new TeacherNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.TEACHER_NOT_FOUND));
+            return teacherMapper.fromModelToResponse(teacher);
     }
 
     public void deleteAllTeachers(Long userId) {
@@ -87,7 +84,7 @@ public class TeacherService {
         if (Objects.nonNull(user) && user.getUserRole().equals(UserRole.ADMIN)) {
             Teacher teacher = teacherRepository
                     .findById(teacherId).orElseThrow(
-                            () -> new TeacherNotFoundException(ErrorMessage.TEACHER_NOT_FOUND));
+                            () -> new TeacherNotFoundException(HttpStatus.NOT_FOUND.name(), ErrorMessage.TEACHER_NOT_FOUND));
             teacherRepository.deleteById(teacherId);
             log.info("deleteById {}", teacher);
         }

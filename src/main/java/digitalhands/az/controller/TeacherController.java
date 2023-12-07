@@ -3,13 +3,12 @@ package digitalhands.az.controller;
 
 import digitalhands.az.request.TeacherRequest;
 import digitalhands.az.response.TeacherResponse;
+import digitalhands.az.response.TeacherResponseList;
 import digitalhands.az.service.TeacherService;
-import digitalhands.az.wrapper.TeacherWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/teacher")
 @RequiredArgsConstructor
@@ -20,25 +19,25 @@ public class TeacherController {
     @PostMapping("/add/{userId}")
     public ResponseEntity<TeacherResponse> createTeacher(@RequestBody TeacherRequest teacherRequest,
                                                          @PathVariable Long userId) {
-        return teacherService.createTeacher(teacherRequest, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.createTeacher(teacherRequest, userId));
     }
 
     @PutMapping("/update/{userId}")
     public ResponseEntity<?> updateTeacher(@PathVariable Long userId,
                                            @RequestBody TeacherRequest teacherRequest) {
-        return teacherService.updateTeacher(teacherRequest, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.updateTeacher(teacherRequest, userId));
 
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<TeacherWrapper>> getAllTeachers() {
-        return teacherService.getAllTeachers();
+    public ResponseEntity<TeacherResponseList> getAllTeachers() {
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.getAllTeachers());
 
     }
 
     @GetMapping("/get/{teacherId}")
     public ResponseEntity<TeacherResponse> getTeacherById(@PathVariable(name = "teacherId") Long teacherId) {
-        return teacherService.getTeacherById(teacherId);
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.getTeacherById(teacherId));
     }
 
     @DeleteMapping("/deleteAll/{userId}")
