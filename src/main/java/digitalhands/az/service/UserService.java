@@ -66,10 +66,10 @@ public class UserService {
         return BAD_CREDENTIALS;
     }
 
-    public ResponseEntity<UserResponse> getUserById(Long userId) {
+    public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + userId));
-        return ResponseEntity.ok(userMapper.fromModelToResponse(user));
+        return userMapper.fromModelToResponse(user);
     }
 
     public void changePassword(ChangePasswordRequest changePasswordRequest, Long userId) {

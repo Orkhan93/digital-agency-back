@@ -39,7 +39,7 @@ public class UserController {
             return ResponseEntity.status(BAD_REQUEST).build();
         } else {
             User user = userRepository.getUserByEmail(userLoginRequest.getEmail()).orElseThrow(
-                    ()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+                    () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
             if (Objects.nonNull(user)) {
                 AuthenticationResponse response = new AuthenticationResponse();
                 response.setJwtToken(jwt);
@@ -52,7 +52,7 @@ public class UserController {
 
     @GetMapping("/get/{userId}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable(name = "userId") Long userId) {
-        return userService.getUserById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(userId));
     }
 
     @PostMapping("/changePassword/{userId}")
