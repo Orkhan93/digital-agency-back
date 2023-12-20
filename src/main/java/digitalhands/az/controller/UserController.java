@@ -10,6 +10,7 @@ import digitalhands.az.request.UserSignUpRequest;
 import digitalhands.az.response.AuthenticationResponse;
 import digitalhands.az.response.UserResponse;
 import digitalhands.az.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody UserSignUpRequest userSignUpRequest) {
         return userService.signUp(userSignUpRequest);
     }
 
