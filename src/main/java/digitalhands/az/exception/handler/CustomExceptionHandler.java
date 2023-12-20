@@ -4,6 +4,7 @@ import digitalhands.az.exception.*;
 import digitalhands.az.file_upload.exception.FileNotFoundException;
 import digitalhands.az.response.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -131,6 +132,20 @@ public class CustomExceptionHandler {
     public ExceptionResponse handleMaintenanceNotFoundException(MaintenanceNotFoundException exception) {
         log.error("handleMaintenanceNotFoundException {}", exception.getMessage());
         return new ExceptionResponse(NOT_FOUND.name(), exception.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ExceptionResponse handlerMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        log.error("handlerMethodArgumentNotValidException {}", exception.getMessage());
+
+        String field = exception.getBindingResult().getFieldError().getField();
+        String message = exception.getBindingResult().getFieldError().getDefaultMessage();
+
+        ExceptionResponse response = new ExceptionResponse();
+        response.setCode(BAD_REQUEST.name());
+        response.setMessage(field + message);
+        return response;
     }
 
 }
