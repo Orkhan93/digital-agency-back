@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
         String jwt = userService.login(userLoginRequest);
         if (jwt == null) {
             return ResponseEntity.status(BAD_REQUEST).build();
